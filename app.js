@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var registration = require('./routes/registration');
 // var contact = require('./routes/contact');
 
-app.use('/registration', registration);
+// app.use('/registration', registration);
 // app.use('/contact', contact);
 
 app.get('/', function(req, res) {
