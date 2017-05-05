@@ -20,7 +20,7 @@ app.use('/registration', registration);
 // app.use('/contact', contact);
 
 app.get('/', function(req, res) {
-  // res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Origin', '*');
 
   res.json(200, 'status: ok');
 });
