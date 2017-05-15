@@ -27,6 +27,16 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
+  // Configuring the email parameters for composing
+  var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
+  var to_email = new helper.Email('brandon@bdsdesign.co');
+  var user_email = new helper.Email(req.body['email'], req.body['name']);
+  var mtg_subject = "New contact form submission on the Medical Technologies Gateway website!";
+  var user_subject = "Medical Technologies Gateway - Contact Form Submission Confirmation";
+
+  // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
+  var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.REGISTRATION_MTG_TEMPLATE);
+  var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.REGISTRATION_USER_TEMPLATE);
 
   var content = {
     "attachments": [

@@ -16,6 +16,27 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
+  // Configuring the email parameters for composing
+  var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
+  var to_email = new helper.Email('brandon@bdsdesign.co');
+  var user_email = new helper.Email(req.body['email'], req.body['name']);
+  var mtg_subject = "New contact form submission on the Medical Technologies Gateway website!";
+  var user_subject = "Medical Technologsies Gateway - Contact Form Submission Confirmation";
+
+  // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
+  var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.CONTACT_MTG_TEMPLATE);
+  var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.CONTACT_USER_TEMPLATE);
+
+  // Check to see if they want to be added to the mailing list
+  var contactRequest = sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/contactdb/recipients',
+    body: [{
+      "email": req.body['email'],
+      "first_name": req.body['firstname'],
+      "last_name": req.body['lastname']
+    }]
+  });
 
   var content = {
     "attachments": [
@@ -36,11 +57,30 @@ router.post ('/', function(req, res) {
     ]
   }
 
+  sendgridRequest(request1);
+  sendgridRequest(request2);
+  sendgridRequest(contactRequest);
+
   // Post to Slack
   slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
 });
 
+function composeMail(from_email, subject, to_email, form_data, template_id) {
+
+}
+
+function sendgridRequest(req) {
+
+  sg.API(req, function(error, response) {
+    // Log response
+    console.log('--RESPONSE BEGIN--');
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+    console.log('--RESPONSE END--\n');
+  });
+}
 
 function slackPost(data, webhook) {
 
