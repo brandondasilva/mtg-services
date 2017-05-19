@@ -13,11 +13,11 @@ app.use(express.static(__dirname + '/public'));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var registration = require('./routes/registration');
-// var contact = require('./routes/contact');
+// var registration = require('./routes/registration');
+var contact = require('./routes/contact');
 
 // app.use('/registration', registration);
-// app.use('/contact', contact);
+app.use('/contact', contact);
 
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
