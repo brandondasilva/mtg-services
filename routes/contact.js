@@ -68,6 +68,24 @@ router.post ('/', function(req, res) {
 
 function composeMail(from_email, subject, to_email, form_data, template_id) {
 
+  var content = new helper.Content("text/html", form_data['message']);
+
+  var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
+
+  // Set up personalizations for the email template using the form data from the parameters
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-lastname-', form_data['lastname']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-subject-', form_data['subject']) );
+
+  mail.setTemplateId(template_id); // Set the Template ID for the email content
+
+  // Return request to send to the SendGrid API
+  return sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: mail.toJSON()
+  });
 }
 
 function sendgridRequest(req) {
