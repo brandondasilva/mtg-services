@@ -5,12 +5,13 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 
 var app = express();
+var bodyParser = require('body-parser');
 
 app.set('port', PORT);
 
 app.use(express.static(__dirname + '/public'));
 
-var bodyParser = require('body-parser');
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // var registration = require('./routes/registration');
