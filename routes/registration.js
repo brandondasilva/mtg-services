@@ -80,3 +80,5 @@ function slackPost(data, webhook) {
     }
   });
 }
+
+module.exports = router;
