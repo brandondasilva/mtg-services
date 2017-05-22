@@ -65,11 +65,19 @@ router.post ('/', function(req, res) {
         "fields": [
           {
             "title": "First Name",
+<<<<<<< HEAD
             "value": req.body['firstname'],
             "short": true
           }, {
             "title": "Last Name",
             "value": req.body['lastname'],
+=======
+            "value": "value",
+            "short": true
+          }, {
+            "title": "Last Name",
+            "value": "value",
+>>>>>>> ddb0607c6d6acdda13829312d3ad804a6aa10b73
             "short": true
           }, {
             "title": "Email Address",
