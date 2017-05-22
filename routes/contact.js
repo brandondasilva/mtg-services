@@ -57,7 +57,18 @@ router.post ('/', function(req, res) {
         ]
       }
     ]
+  };
+
+  var sheetsRequest = {
+    "range": "Form Data!A2:H",
+    "values": [
+      [
+
+      ]
+    ]
   }
+
+  sheets(sheetsRequest);
 
   sendgridRequest(request1);
   sendgridRequest(request2);
@@ -66,8 +77,19 @@ router.post ('/', function(req, res) {
   // Post to Slack
   slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
+
+  res.send(req.body);
 });
 
+/**
+ * Set up the mail information and template to be requested to be sent through SendGrid
+ *
+ * @param {String} from_email "From" email
+ * @param {String} subject Subject for the email
+ * @param {String} to_email "To" email
+ * @param {Object} form_data The information submitted on the form
+ * @param {String} template_id The ID of the template to use when sending the email
+ */
 function composeMail(from_email, subject, to_email, form_data, template_id) {
 
   var content = new helper.Content("text/html", form_data['message']);
@@ -90,6 +112,11 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   });
 }
 
+/**
+ * Sends the SendGrid request to the API
+ *
+ * @param {Object} req The callback to call
+ */
 function sendgridRequest(req) {
 
   sg.API(req, function(error, response) {
@@ -102,6 +129,12 @@ function sendgridRequest(req) {
   });
 }
 
+/**
+ * Post the content being passed into the function to Slack through the webhook
+ *
+ * @param {Object} data The content to populate the Slack post
+ * @param {Object} webhook The content to populate the Slack post
+ */
 function slackPost(data, webhook) {
 
   request({
@@ -115,6 +148,62 @@ function slackPost(data, webhook) {
       }
     }
   });
+}
+
+/**
+ *
+ */
+function sheets(content) {
+
+  // Call function to authorize access to the Google API and send data to spreadsheet
+  authorize(function(authClient) {
+
+    // Today's date for logging
+    var d = new Date(); // Create new Date
+    var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+
+    // Create request object to send to the spreadsheet
+    var sheetReq = {
+      spreadsheetId: '1Xj-igcg5c7hWyDWg7vkyThmekbPQ0aMBg1rsDI39Sa4',
+      range: content.range,
+      valueInputOption: 'RAW',
+      auth: authClient,
+      resource: {
+        majorDimension: 'ROWS',
+        values: content.values
+      }
+    };
+  });
+}
+
+/**
+ * Authorize access to the Google API to update the spreadsheet
+ *
+ * @param {function} callback The callback to call
+ */
+function authorize(callback) {
+
+  if (oauth2Client == null) {
+    console.log('Google authentication failed');
+    return;
+  }
+
+  // Set credentials and tokens
+  oauth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+  oauth2Client.refreshAccessToken(function(err, tokens) { if (err) { console.log(err); } });
+
+  var scopes = [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/spreadsheets'
+  ]
+
+  var AuthUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes
+  });
+
+  callback(oauth2Client);
 }
 
 module.exports = router;
