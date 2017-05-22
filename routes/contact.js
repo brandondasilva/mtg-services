@@ -50,7 +50,11 @@ router.post ('/', function(req, res) {
         "text": "The following are the contents of the form for reference.",
         "fields": [
           {
-            "title": "PAC Email Status code",
+            "title": "First Name",
+            "value": "value",
+            "short": true
+          }, {
+            "title": "Last Name",
             "value": "value",
             "short": true
           }
