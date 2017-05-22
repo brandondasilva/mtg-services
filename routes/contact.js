@@ -10,6 +10,18 @@ var router = express.Router();
 var helper = require('sendgrid').mail;
 var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
+// Setting up Google API Authentication
+var google = require('googleapis');
+var googleAuth = google.auth.OAuth2;
+var sheets = google.sheets('v4');
+
+// Set up the OAuth2 Client using the environment variables from Heroku
+// var oauth2Client = new googleAuth(
+//   process.env.GOOGLE_CLIENT_ID,
+//   process.env.GOOGLE_CLIENT_SECRET,
+//   process.env.GOOGLE_REDIRECT_URL
+// );
+
 router.get ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
   res.send('API v1 GET: Hello World!');
@@ -17,6 +29,8 @@ router.get ('/', function(req, res) {
 
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
+
+  var name = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
@@ -50,9 +64,25 @@ router.post ('/', function(req, res) {
         "text": "The following are the contents of the form for reference.",
         "fields": [
           {
-            "title": "PAC Email Status code",
-            "value": "value",
+            "title": "First Name",
+            "value": req.body['firstname'],
             "short": true
+          }, {
+            "title": "Last Name",
+            "value": req.body['lastname'],
+            "short": true
+          }, {
+            "title": "Email Address",
+            "value": req.body['email'],
+            "short": false
+          }, {
+            "title": "Subject",
+            "value": req.body['subject'],
+            "short": false
+          }, {
+            "title": "Message",
+            "value": req.body['message'],
+            "short": false
           }
         ]
       }
