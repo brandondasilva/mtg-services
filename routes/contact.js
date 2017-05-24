@@ -37,7 +37,7 @@ router.post ('/', function(req, res) {
   var to_email = new helper.Email('brandon@bdsdesign.co');
   var user_email = new helper.Email(req.body['email'], req.body['name']);
   var mtg_subject = "New contact form submission on the Medical Technologies Gateway website!";
-  var user_subject = "Medical Technologsies Gateway - Contact Form Submission Confirmation";
+  var user_subject = "Medical Technologies Gateway - Contact Form Submission Confirmation";
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.CONTACT_MTG_TEMPLATE);
