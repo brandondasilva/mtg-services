@@ -57,11 +57,11 @@ router.post ('/', function(req, res) {
   var content = {
     "attachments": [
       {
-        "fallback": "A new request for a quote has been submitted.",
+        "fallback": "A new form on the MTG website has been submitted!",
         "color": "#36a64f",
-        "pretext": "A new request for a quote has been submitted.",
-        "title": "New Form Quote Submission",
-        "text": "The following are the contents of the form for reference.",
+        "pretext": "A new form on the MTG website has been submitted!",
+        "title": "New Contact Form Submission",
+        "text": "The contents of the form are outline below for reference.",
         "fields": [
           {
             "title": "First Name",
@@ -82,6 +82,10 @@ router.post ('/', function(req, res) {
           }, {
             "title": "Message",
             "value": req.body['message'],
+            "short": false
+          }, {
+            "title": "Added to mailing list?",
+            "value": (req.body['mailinglist']) ? "Yes" : "No",
             "short": false
           }
         ]
