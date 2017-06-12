@@ -32,7 +32,6 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
-  /*
   var name = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
@@ -105,17 +104,16 @@ router.post ('/', function(req, res) {
     ]
   }
 
-  sheets(sheetsRequest);
+  // sheets(sheetsRequest);
 
   sendgridRequest(request1);
   sendgridRequest(request2);
-  sendgridRequest(contactRequest);
+  // sendgridRequest(contactRequest);
 
   // Post to Slack
   slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
 
-  */
   res.send(req.body);
 });
 
@@ -140,7 +138,7 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-subject-', form_data['subject']) );
 
-  mail.setTemplateId(template_id); // Set the Template ID for the email content
+  // mail.setTemplateId(template_id); // Set the Template ID for the email content
 
   // Return request to send to the SendGrid API
   return sg.emptyRequest({
@@ -153,7 +151,7 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
 /**
  * Sends the SendGrid request to the API
  *
- * @param {Object} req The callback to call
+ * @param {Object} req The callback to send to SendGrid
  */
 function sendgridRequest(req) {
 
