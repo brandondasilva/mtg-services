@@ -30,6 +30,9 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
+  console.log(req.body);
+
+  /*
   var name = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
@@ -112,6 +115,7 @@ router.post ('/', function(req, res) {
   slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
 
+  */
   res.send(req.body);
 });
 
