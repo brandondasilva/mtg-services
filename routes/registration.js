@@ -10,14 +10,15 @@ var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
 
 // Setting up Google API Authentication
 var google = require('googleapis');
-var googleAuth = require('google-auth-library');
-var auth = new googleAuth();
-var oauth2Client = new auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URL
-);
-google.options({ auth: oauth2Client });
+var googleAuth = google.auth.OAuth2;
+var sheets = google.sheets('v4');
+
+// Set up the OAuth2 Client using the environment variables from Heroku
+// var oauth2Client = new googleAuth(
+//   process.env.GOOGLE_CLIENT_ID,
+//   process.env.GOOGLE_CLIENT_SECRET,
+//   process.env.GOOGLE_REDIRECT_URL
+// );
 
 router.get ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
