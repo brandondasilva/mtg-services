@@ -147,7 +147,7 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-subject-', form_data['subject']) );
 
-  // mail.setTemplateId(template_id); // Set the Template ID for the email content
+  mail.setTemplateId(template_id); // Set the Template ID for the email content
 
   // Return request to send to the SendGrid API
   return sg.emptyRequest({
