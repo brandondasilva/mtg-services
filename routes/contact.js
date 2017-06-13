@@ -34,11 +34,15 @@ router.post ('/', function(req, res) {
 
   var name = req.body['firstname'] + ' ' + req.body['lastname'];
 
+  // Today's date for logging
+  var d = new Date(); // Create new Date
+  var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
   var to_email = new helper.Email('brandon@bdsdesign.co');
   var user_email = new helper.Email(req.body['email'], req.body['name']);
-  var mtg_subject = "New contact form submission on the Medical Technologies Gateway website!";
+  var mtg_subject = "New contact form submission on the MTG website!";
   var user_subject = "Medical Technologies Gateway - Contact Form Submission Confirmation";
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
@@ -96,10 +100,15 @@ router.post ('/', function(req, res) {
   };
 
   var sheetsRequest = {
-    "range": "Form Data!A2:H",
-    "values": [
+    range: "Contact Form Submissions!A2:H",
+    values: [
       [
-
+        date,
+        name,
+        req.body['email'],
+        req.body['subject'],
+        (req.body['mailinglist'] == 'true') ? "Yes" : "No",
+        req.body['message'],
       ]
     ]
   }
@@ -193,10 +202,6 @@ function sheets(content) {
 
   // Call function to authorize access to the Google API and send data to spreadsheet
   authorize(function(authClient) {
-
-    // Today's date for logging
-    var d = new Date(); // Create new Date
-    var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
 
     // Create request object to send to the spreadsheet
     var sheetReq = {
