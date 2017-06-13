@@ -116,7 +116,7 @@ router.post ('/', function(req, res) {
   // sheets(sheetsRequest);
 
   sendgridRequest(request1);
-  // sendgridRequest(request2);
+  sendgridRequest(request2);
   // sendgridRequest(contactRequest);
 
   // Post to Slack
