@@ -87,7 +87,7 @@ router.post ('/', function(req, res) {
             "short": false
           }, {
             "title": "Added to mailing list?",
-            "value": (req.body['mailinglist']) ? "Yes" : "No",
+            "value": (req.body['mailinglist'] == 'true') ? "Yes" : "No",
             "short": false
           }
         ]
