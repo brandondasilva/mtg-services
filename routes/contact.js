@@ -107,11 +107,11 @@ router.post ('/', function(req, res) {
   // sheets(sheetsRequest);
 
   sendgridRequest(request1);
-  sendgridRequest(request2);
+  // sendgridRequest(request2);
   // sendgridRequest(contactRequest);
 
   // Post to Slack
-  slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
+  // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
