@@ -18,9 +18,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
 // var registration = require('./routes/registration');
+// var news = require('./routes/news');
+// var stories = require('./routes/stories');
 var contact = require('./routes/contact');
 
 // app.use('/registration', registration);
+// app.use('/news', news);
+// app.use('/stories', stories);
 app.use('/contact', contact);
 
 app.get('/', function(req, res) {
