@@ -65,7 +65,7 @@ router.post ('/', function(req, res) {
       "attachments": [
         {
           "fallback": "A new form on the MTG website has been submitted!",
-          "color": "#36a64f",
+          "color": "#1BDB6C",
           "pretext": "A new form on the MTG website has been submitted!",
           "title": "New Contact Form Submission",
           "text": "The contents of the form are outline below for reference.",
@@ -194,6 +194,38 @@ function sendgridRequest(req, slackReq) {
 
       if (response.statusCode == 200 || response.statusCode == 202) {
 
+        // Confirmation response
+        var confirmationRes = {
+          "attachments": [
+            {
+              "fallback": "A new form on the MTG website has been submitted!",
+              "color": "#1BDB6C",
+              "pretext": "A new form on the MTG website has been submitted!",
+              "title": "New Contact Form Submission",
+              "text": "The contents of the form are outline below for reference.",
+              "fields": [
+                {
+                  "title": "Status Code",
+                  "value": response.statusCode,
+                  "short": true
+                }, {
+                  "title": "Response Body",
+                  "value": "```" + response.body + "```",
+                  "short": false
+                }, {
+                  "title": "Response Headers",
+                  "value": "```" + response.headers + "```",
+                  "short": false
+                }
+              ]
+            }
+          ]
+        }
+
+        // Post to Slack
+        // slackPost(confirmationRes, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(confirmationRes, process.env.BDS_SLACK_WEBHOOK);
+
       } else {
 
         // Error response
@@ -201,7 +233,7 @@ function sendgridRequest(req, slackReq) {
           "attachments": [
             {
               "fallback": "A new form on the MTG website has been submitted!",
-              "color": "#36a64f",
+              "color": "#C10039",
               "pretext": "A new form on the MTG website has been submitted!",
               "title": "New Contact Form Submission",
               "text": "The contents of the form are outline below for reference.",
@@ -230,6 +262,9 @@ function sendgridRequest(req, slackReq) {
       }
     } else {
 
+      // Post to Slack
+      // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
     }
 
     // Log response
@@ -264,6 +299,8 @@ function slackPost(data, webhook) {
 
 /**
  *
+ *
+ * @param {Object} content An object that contains the range and content to populate on Google Sheets
  */
 function sheets(content) {
 

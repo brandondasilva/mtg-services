@@ -1,6 +1,8 @@
 
 'use strict';
 
+var moment = require('moment-timezone');
+
 var express = require('express');
 var request = require('request');
 var router = express.Router();
@@ -28,6 +30,12 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
+  var name = req.body['firstname'] + ' ' + req.body['lastname'];
+
+  // Today's date for logging
+  var d = new Date(); // Create new Date
+  var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+  
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
   var to_email = new helper.Email('brandon@bdsdesign.co');
