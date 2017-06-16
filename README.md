@@ -2,6 +2,4 @@
 
 # Medical Technologies Gateway
 
-## Overview
-
-## Setup
+Back end services for Medical Technologies Gateway.

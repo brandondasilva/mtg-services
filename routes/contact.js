@@ -60,46 +60,56 @@ router.post ('/', function(req, res) {
     }]
   });
 
-  var content = {
-    "attachments": [
-      {
-        "fallback": "A new form on the MTG website has been submitted!",
-        "color": "#36a64f",
-        "pretext": "A new form on the MTG website has been submitted!",
-        "title": "New Contact Form Submission",
-        "text": "The contents of the form are outline below for reference.",
-        "fields": [
-          {
-            "title": "First Name",
-            "value": req.body['firstname'],
-            "short": true
-          }, {
-            "title": "Last Name",
-            "value": req.body['lastname'],
-            "short": true
-          }, {
-            "title": "Email Address",
-            "value": req.body['email'],
-            "short": false
-          }, {
-            "title": "Subject",
-            "value": req.body['subject'],
-            "short": false
-          }, {
-            "title": "Message",
-            "value": req.body['message'],
-            "short": false
-          }, {
-            "title": "Added to mailing list?",
-            "value": (req.body['mailinglist'] == 'true') ? "Yes" : "No",
-            "short": false
-          }
-        ]
-      }
-    ]
-  };
+  var slackParams = {
+    "form": {
+      "attachments": [
+        {
+          "fallback": "A new form on the MTG website has been submitted!",
+          "color": "#36a64f",
+          "pretext": "A new form on the MTG website has been submitted!",
+          "title": "New Contact Form Submission",
+          "text": "The contents of the form are outline below for reference.",
+          "fields": [
+            {
+              "title": "First Name",
+              "value": req.body['firstname'],
+              "short": true
+            }, {
+              "title": "Last Name",
+              "value": req.body['lastname'],
+              "short": true
+            }, {
+              "title": "Email Address",
+              "value": req.body['email'],
+              "short": false
+            }, {
+              "title": "Subject",
+              "value": req.body['subject'],
+              "short": false
+            }, {
+              "title": "Message",
+              "value": req.body['message'],
+              "short": false
+            }, {
+              "title": "Added to mailing list?",
+              "value": (req.body['mailinglist'] == 'true') ? "Yes" : "No",
+              "short": false
+            }
+          ]
+        }
+      ]
+    },
+    "mailinglist": {
+      "attachments": [
+        {
 
-  var sheetsRequest = {
+        }
+      ]
+    }
+  }
+
+  /*
+  sheets({
     range: "Contact Form Submissions!A2:H",
     values: [
       [
@@ -107,21 +117,34 @@ router.post ('/', function(req, res) {
         name,
         req.body['email'],
         req.body['subject'],
-        (req.body['mailinglist'] == 'true') ? "Yes" : "No",
-        req.body['message'],
+        req.body['message']
       ]
     ]
+  });
+
+  if (req.body['mailinglist'] == 'true') {
+
+    sendgridRequest(contactRequest, slackParams['mailinglist']);
+
+    sheets({
+      range: "Mailing List!A2:C",
+      values: [
+        [
+          req.body['firstname'],
+          req.body['lastname'],
+          req.body['email']
+        ]
+      ]
+    });
   }
+  */
 
-  // sheets(sheetsRequest);
-
-  sendgridRequest(request1);
-  sendgridRequest(request2);
-  // sendgridRequest(contactRequest);
+  sendgridRequest(request1, undefined);
+  sendgridRequest(request2, undefined);
 
   // Post to Slack
-  // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
-  slackPost(content, process.env.BDS_SLACK_WEBHOOK);
+  // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
 });
@@ -161,10 +184,54 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
  * Sends the SendGrid request to the API
  *
  * @param {Object} req The callback to send to SendGrid
+ * @param {Object} slackReq The attachment content to post on Slack
  */
-function sendgridRequest(req) {
+function sendgridRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
+
+    if (slackReq == undefined) {
+
+      if (response.statusCode == 200 || response.statusCode == 202) {
+
+      } else {
+
+        // Error response
+        var errorRes = {
+          "attachments": [
+            {
+              "fallback": "A new form on the MTG website has been submitted!",
+              "color": "#36a64f",
+              "pretext": "A new form on the MTG website has been submitted!",
+              "title": "New Contact Form Submission",
+              "text": "The contents of the form are outline below for reference.",
+              "fields": [
+                {
+                  "title": "Status Code",
+                  "value": response.statusCode,
+                  "short": true
+                }, {
+                  "title": "Response Body",
+                  "value": "```" + response.body + "```",
+                  "short": false
+                }, {
+                  "title": "Response Headers",
+                  "value": "```" + response.headers + "```",
+                  "short": false
+                }
+              ]
+            }
+          ]
+        }
+
+        // Post to Slack
+        // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
+      }
+    } else {
+
+    }
+
     // Log response
     console.log('--RESPONSE BEGIN--');
     console.log(response.statusCode);
