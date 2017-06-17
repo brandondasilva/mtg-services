@@ -102,7 +102,26 @@ router.post ('/', function(req, res) {
     "mailinglist": {
       "attachments": [
         {
-
+          "fallback": "A new contact has subscribed to the mailing list!",
+          "color": "#1BDB6C",
+          "pretext": "A new contact has subscribed to the mailing list!",
+          "title": "New Contact Added to the Mailing List",
+          "text": "The new subscriber's information and upload status is outlined below.",
+          "fields": [
+            {
+              "title": "First Name",
+              "value": req.body['firstname'],
+              "short": true
+            }, {
+              "title": "Last Name",
+              "value": req.body['lastname'],
+              "short": true
+            }, {
+              "title": "Email Address",
+              "value": req.body['email'],
+              "short": false
+            }
+          ]
         }
       ]
     }
@@ -198,11 +217,11 @@ function sendgridRequest(req, slackReq) {
         var confirmationRes = {
           "attachments": [
             {
-              "fallback": "A new form on the MTG website has been submitted!",
+              "fallback": "SendGrid Request Successful!",
               "color": "#1BDB6C",
-              "pretext": "A new form on the MTG website has been submitted!",
-              "title": "New Contact Form Submission",
-              "text": "The contents of the form are outline below for reference.",
+              "pretext": "SendGrid Request Successful!",
+              "title": "SendGrid Request Successful!",
+              "text": "The SendGrid request has been sent. Below is the response from SendGrid.",
               "fields": [
                 {
                   "title": "Status Code",
@@ -232,11 +251,11 @@ function sendgridRequest(req, slackReq) {
         var errorRes = {
           "attachments": [
             {
-              "fallback": "A new form on the MTG website has been submitted!",
+              "fallback": "SENDGRID REQUEST FAILED",
               "color": "#C10039",
-              "pretext": "A new form on the MTG website has been submitted!",
-              "title": "New Contact Form Submission",
-              "text": "The contents of the form are outline below for reference.",
+              "pretext": "SENDGRID REQUEST FAILED!",
+              "title": "SENDGRID REQUEST FAILED!",
+              "text": "The response from SendGrid is displayed below for more information.",
               "fields": [
                 {
                   "title": "Status Code",
@@ -259,12 +278,19 @@ function sendgridRequest(req, slackReq) {
         // Post to Slack
         // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
+
       }
     } else {
+
+      // If the slackReq parameter is defined, then add the status code, headers
+      // and response
+      //TODO NEED TO ADD STATUS CODE IF AND ADD THE MESSAGES TO THE SLACK POST
+
 
       // Post to Slack
       // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
       slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
+
     }
 
     // Log response
