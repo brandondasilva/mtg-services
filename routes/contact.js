@@ -209,9 +209,9 @@ function sendgridRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
 
-    if (slackReq == undefined) {
+    if (response.statusCode == 200 || response.statusCode == 202) {
 
-      if (response.statusCode == 200 || response.statusCode == 202) {
+      if (slackReq == undefined) {
 
         // Confirmation response
         var confirmationRes = {
@@ -247,49 +247,68 @@ function sendgridRequest(req, slackReq) {
 
       } else {
 
-        // Error response
-        var errorRes = {
-          "attachments": [
-            {
-              "fallback": "SENDGRID REQUEST FAILED",
-              "color": "#C10039",
-              "pretext": "SENDGRID REQUEST FAILED!",
-              "title": "SENDGRID REQUEST FAILED!",
-              "text": "The response from SendGrid is displayed below for more information.",
-              "fields": [
-                {
-                  "title": "Status Code",
-                  "value": response.statusCode,
-                  "short": true
-                }, {
-                  "title": "Response Body",
-                  "value": "```" + response.body + "```",
-                  "short": false
-                }, {
-                  "title": "Response Headers",
-                  "value": "```" + response.headers + "```",
-                  "short": false
-                }
-              ]
-            }
-          ]
-        }
+        // If the slackReq parameter is defined, then add the status code, headers
+        // and response
+
+        slackReq['attachments']['fields'].push(
+          {
+            "title": "Status Code",
+            "value": response.statusCode,
+            "short": true
+          }, {
+            "title": "Response Body",
+            "value": "```" + response.body + "```",
+            "short": false
+          }, {
+            "title": "Response Headers",
+            "value": "```" + response.headers + "```",
+            "short": false
+          }
+        );
 
         // Post to Slack
-        // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
-        slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
+        // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
 
       }
+
     } else {
 
-      // If the slackReq parameter is defined, then add the status code, headers
-      // and response
-      //TODO NEED TO ADD STATUS CODE IF AND ADD THE MESSAGES TO THE SLACK POST
+      // Error response
+      var errorRes = {
+        "attachments": [
+          {
+            "fallback": "SENDGRID REQUEST FAILED",
+            "color": "#C10039",
+            "pretext": "SENDGRID REQUEST FAILED!",
+            "title": "SENDGRID REQUEST FAILED!",
+            "text": "The response from SendGrid is displayed below for more information.",
+            "fields": [
+              {
+                "title": "Status Code",
+                "value": response.statusCode,
+                "short": true
+              }, {
+                "title": "Response Body",
+                "value": "```" + response.body + "```",
+                "short": false
+              }, {
+                "title": "Response Headers",
+                "value": "```" + response.headers + "```",
+                "short": false
+              }
+            ]
+          }
+        ]
+      }
 
+      if (slackReq != undefined) {
+        errorRes['attachments']['text'] += "\nThis request is for the SendGrid Contacts API";
+      }
 
       // Post to Slack
-      // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
-      slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
+      // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
 
     }
 
