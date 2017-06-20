@@ -65,7 +65,6 @@ router.post ('/', function(req, res) {
       "attachments": [
         {
           "fallback": "A new form on the MTG website has been submitted!",
-          "color": "#1BDB6C",
           "pretext": "A new form on the MTG website has been submitted!",
           "title": "New Contact Form Submission",
           "text": "The contents of the form are outline below for reference.",
@@ -217,10 +216,10 @@ function sendgridRequest(req, slackReq) {
         var confirmationRes = {
           "attachments": [
             {
-              "fallback": "SendGrid Request Successful!",
+              "fallback": "SendGrid Email Request Successful!",
               "color": "#1BDB6C",
-              "pretext": "SendGrid Request Successful!",
-              "title": "SendGrid Request Successful!",
+              "pretext": "SendGrid Email Request Successful!",
+              "title": "SendGrid Email Request Successful!",
               "text": "The SendGrid request has been sent. Below is the response from SendGrid.",
               "fields": [
                 {
@@ -249,6 +248,9 @@ function sendgridRequest(req, slackReq) {
 
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
+        slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
 
         slackReq['attachments']['fields'].push(
           {
@@ -343,7 +345,9 @@ function slackPost(data, webhook) {
 }
 
 /**
- *
+ * Google Sheets API request to post the information to the spreadsheet. The information
+ * on which page on the spreadsheet to post to as well as the appropriate cells on the
+ * spreadsheet are passed through as an Object through a parameter.
  *
  * @param {Object} content An object that contains the range and content to populate on Google Sheets
  */
