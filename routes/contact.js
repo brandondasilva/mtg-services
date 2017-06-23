@@ -228,11 +228,11 @@ function sendgridRequest(req, slackReq) {
                   "short": true
                 }, {
                   "title": "Response Body",
-                  "value": "```" + response.body + "```",
+                  "value": "```" + JSON.stringify(response.body) + "```",
                   "short": false
                 }, {
                   "title": "Response Headers",
-                  "value": "```" + response.headers + "```",
+                  "value": "```" + JSON.stringify(response.headers) + "```",
                   "short": false
                 }
               ]
@@ -259,11 +259,11 @@ function sendgridRequest(req, slackReq) {
             "short": true
           }, {
             "title": "Response Body",
-            "value": "```" + response.body + "```",
+            "value": "```" + JSON.stringify(response.body) + "```",
             "short": false
           }, {
             "title": "Response Headers",
-            "value": "```" + response.headers + "```",
+            "value": "```" + JSON.stringify(response.headers) + "```",
             "short": false
           }
         );
@@ -292,11 +292,11 @@ function sendgridRequest(req, slackReq) {
                 "short": true
               }, {
                 "title": "Response Body",
-                "value": "```" + response.body + "```",
+                "value": "```" + JSON.stringify(response.body) + "```",
                 "short": false
               }, {
                 "title": "Response Headers",
-                "value": "```" + response.headers + "```",
+                "value": "```" + JSON.stringify(response.headers) + "```",
                 "short": false
               }
             ]
