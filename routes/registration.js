@@ -35,7 +35,7 @@ router.post ('/', function(req, res) {
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
-  
+
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
   var to_email = new helper.Email('brandon@bdsdesign.co');
@@ -73,6 +73,7 @@ router.post ('/', function(req, res) {
 
 function composeMail() {
 
+  var content = new helper.Content("text/html", "");
 }
 
 function slackPost(data, webhook) {

@@ -20,17 +20,19 @@ app.use(helmet());
 // var registration = require('./routes/registration');
 // var news = require('./routes/news');
 // var stories = require('./routes/stories');
+// var support = require('./routes/support');
 var contact = require('./routes/contact');
 
 // app.use('/registration', registration);
 // app.use('/news', news);
 // app.use('/stories', stories);
+// app.use('/support', support);
 app.use('/contact', contact);
 
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  res.json(200, 'status: ok');
+  res.status(200).send('ok');
 });
 
 app.listen(app.get('port'), function() {

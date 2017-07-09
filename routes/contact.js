@@ -127,7 +127,7 @@ router.post ('/', function(req, res) {
   }
 
   /*
-  sheets({
+  googleSheets({
     range: "Contact Form Submissions!A2:H",
     values: [
       [
@@ -144,7 +144,7 @@ router.post ('/', function(req, res) {
 
     sendgridRequest(contactRequest, slackParams['mailinglist']);
 
-    sheets({
+    googleSheets({
       range: "Mailing List!A2:C",
       values: [
         [
@@ -351,7 +351,7 @@ function slackPost(data, webhook) {
  *
  * @param {Object} content An object that contains the range and content to populate on Google Sheets
  */
-function sheets(content) {
+function googleSheets(content) {
 
   // Call function to authorize access to the Google API and send data to spreadsheet
   authorize(function(authClient) {
