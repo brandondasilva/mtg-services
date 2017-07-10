@@ -7,13 +7,23 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    uglify: {
+      scripts: {
+        expand: true,
+        cwd: 'dev/server',
+        src: ['*.js', '**/*.js'],
+        dest: 'server',
+        ext: '.js'
+      }
+    },
+
     sass: {
       dist: {
         files: [{
           expand: true,
           cwd: 'dev/client/sass',
           src: ['*.scss'],
-          dest: 'dev/css',
+          dest: 'dev/client/css',
           ext: '.css'
         }]
       }
@@ -36,4 +46,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass');
 
   grunt.registerTask('default', ['sass', 'cssmin']);
+  grunt.registerTask('server', ['uglify']);
 };
