@@ -16,11 +16,11 @@ var googleAuth = google.auth.OAuth2;
 var sheets = google.sheets('v4');
 
 // Set up the OAuth2 Client using the environment variables from Heroku
-// var oauth2Client = new googleAuth(
-//   process.env.GOOGLE_CLIENT_ID,
-//   process.env.GOOGLE_CLIENT_SECRET,
-//   process.env.GOOGLE_REDIRECT_URL
-// );
+var oauth2Client = new googleAuth(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 
 router.get ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');

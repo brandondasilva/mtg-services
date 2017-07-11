@@ -16,11 +16,11 @@ var googleAuth = google.auth.OAuth2;
 var sheets = google.sheets('v4');
 
 // Set up the OAuth2 Client using the environment variables from Heroku
-// var oauth2Client = new googleAuth(
-//   process.env.GOOGLE_CLIENT_ID,
-//   process.env.GOOGLE_CLIENT_SECRET,
-//   process.env.GOOGLE_REDIRECT_URL
-// );
+var oauth2Client = new googleAuth(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 
 router.get ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
@@ -35,6 +35,7 @@ router.post ('/', function(req, res) {
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+  req.body['name'] = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
@@ -125,13 +126,12 @@ router.post ('/', function(req, res) {
     }
   }
 
-  /*
   googleSheets({
     range: "Contact Form Submissions!A2:H",
     values: [
       [
         date,
-        name,
+        req.body['name'],
         req.body['email'],
         req.body['subject'],
         req.body['message']
@@ -154,7 +154,6 @@ router.post ('/', function(req, res) {
       ]
     });
   }
-  */
 
   sendgridRequest(request1, undefined);
   sendgridRequest(request2, undefined);
@@ -178,12 +177,11 @@ router.post ('/', function(req, res) {
 function composeMail(from_email, subject, to_email, form_data, template_id) {
 
   var content = new helper.Content("text/html", form_data['message']);
-  var name = form_data['firstname'] + ' ' + form_data['lastname'];
 
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
   // Set up personalizations for the email template using the form data from the parameters
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', form_data['name']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-subject-', form_data['subject']) );
@@ -353,7 +351,7 @@ function googleSheets(content) {
 
     // Create request object to send to the spreadsheet
     var sheetReq = {
-      spreadsheetId: '1Xj-igcg5c7hWyDWg7vkyThmekbPQ0aMBg1rsDI39Sa4',
+      spreadsheetId: '1-AEh85B7NA-05DDWYe1dIqBdWwecBuJQqFWvxtUblvU',
       range: content.range,
       valueInputOption: 'RAW',
       auth: authClient,
