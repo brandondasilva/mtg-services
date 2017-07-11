@@ -57,6 +57,13 @@ router.post ('/', function(req, res) {
     }]
   });
 
+  var mailinglistRequest = sg.emptyRequest({
+    method: 'GET',
+    path: '/v3/contactdb/lists',
+  });
+
+  console.log(mailinglistRequest);
+
   // Setting up the Slack post messages
   var slackParams = {
     "form": {
@@ -244,17 +251,11 @@ function sendgridRequest(req, slackReq) {
 
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
-        if (response.statusCode == 201) {
-          slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful (already signed up)!";
-          slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful (already signed up)!";
-          slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful (already signed up)!";
-        } else {
-          slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful!";
-          slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful!";
-          slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful!";
-        }
+        slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful!";
 
-        slackReq['attachments'][0]['fields'].unshift(
+        slackReq['attachments'][0]['fields'].push(
           {
             "title": "Status Code",
             "value": response.statusCode,
