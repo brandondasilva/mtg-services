@@ -40,12 +40,11 @@ router.post ('/', function(req, res) {
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
   var to_email = new helper.Email('brandon@bdsdesign.co');
   var user_email = new helper.Email(req.body['email'], req.body['name']);
-  var mtg_subject = "New contact form submission on the MTG website!";
+  var mtg_subject = "New device registered on the MTG website!";
   var user_subject = "Medical Technologies Gateway - New Device Registration Confirmation";
 
   // Format purchase date
-  var purchase_date = moment(req.body['year'] + req.body['month'] + req.body['day']).format('L');
-  req.body['date'] = purchase_date;
+  req.body['date'] = moment(req.body['year'] + req.body['month'] + req.body['day']).format('L');
   console.log(req.body);
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
@@ -56,9 +55,9 @@ router.post ('/', function(req, res) {
     "form": {
       "attachments": [
         {
-          "fallback": "A new request for a quote has been submitted.",
-          "pretext": "A new request for a quote has been submitted.",
-          "title": "New Form Quote Submission",
+          "fallback": "A new device has been registered on MTG.",
+          "pretext": "A new device has been registered on MTG.",
+          "title": "New Device Registered",
           "text": "The following are the contents of the form for reference.",
           "fields": [
             {
@@ -83,7 +82,7 @@ router.post ('/', function(req, res) {
               "short": true
             }, {
               "title": "Date of Purchase",
-              "value": purchase_date,
+              "value": req.body['date'],
               "short": true
             }, {
               "title": "Country of Purchase",
