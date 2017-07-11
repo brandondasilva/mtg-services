@@ -58,13 +58,14 @@ router.post ('/', function(req, res) {
     }]
   });
 
+  // Setting up the Slack post messages
   var slackParams = {
     "form": {
       "attachments": [
         {
-          "fallback": "A new form on the MTG website has been submitted!",
-          "pretext": "A new form on the MTG website has been submitted!",
-          "title": "New Contact Form Submission",
+          "fallback": "A new Featured Stories form on the MTG website has been submitted!",
+          "pretext": "A new Featured Stories form on the MTG website has been submitted!",
+          "title": "New Featured Stories Form Submission",
           "text": "The contents of the form are outline below for reference.",
           "fields": [
             {
@@ -178,8 +179,8 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
   // Set up personalizations for the email template using the form data from the parameters
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name );
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname'] );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
 
   mail.setTemplateId(template_id); // Set the Template ID for the email content

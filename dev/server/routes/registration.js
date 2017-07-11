@@ -47,7 +47,7 @@ router.post ('/', function(req, res) {
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.REGISTRATION_MTG_TEMPLATE);
   var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.REGISTRATION_USER_TEMPLATE);
 
-  var content = {
+  var slackParams = {
     "form": {
       "attachments": [
         {
@@ -94,9 +94,13 @@ router.post ('/', function(req, res) {
     }
   }
 
+  // SendGrid requests for sending emails
+  sendgridRequest(request1, undefined);
+  sendgridRequest(request2, undefined);
+
   // Post to Slack
-  slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
-  slackPost(content, process.env.BDS_SLACK_WEBHOOK);
+  // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 });
 
 /**
@@ -118,8 +122,8 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
   // Set up personalizations for the email template using the form data from the parameters
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name );
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname'] );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-device-', form_data['device']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-serial-', form_data['serial']) );
@@ -133,6 +137,131 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
     method: 'POST',
     path: '/v3/mail/send',
     body: mail.toJSON()
+  });
+}
+
+/**
+ * Sends the SendGrid request to the API
+ *
+ * @param {Object} req The callback to send to SendGrid
+ * @param {Object} slackReq The attachment content to post on Slack
+ */
+function sendgridRequest(req, slackReq) {
+
+  sg.API(req, function(error, response) {
+
+    if (response.statusCode == 200 || response.statusCode == 202) {
+
+      if (slackReq == undefined) {
+
+        // Confirmation response
+        var confirmationRes = {
+          "attachments": [
+            {
+              "fallback": "SendGrid Email Request Successful!",
+              "color": "#1BDB6C",
+              "pretext": "SendGrid Email Request Successful!",
+              "title": "SendGrid Email Request Successful!",
+              "text": "The SendGrid request has been sent. Below is the response from SendGrid.",
+              "fields": [
+                {
+                  "title": "Status Code",
+                  "value": response.statusCode,
+                  "short": true
+                }, {
+                  "title": "Response Body",
+                  "value": "```" + JSON.stringify(response.body) + "```",
+                  "short": false
+                }, {
+                  "title": "Response Headers",
+                  "value": "```" + JSON.stringify(response.headers) + "```",
+                  "short": false
+                }
+              ]
+            }
+          ]
+        }
+
+        // Post to Slack
+        // slackPost(confirmationRes, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(confirmationRes, process.env.BDS_SLACK_WEBHOOK);
+
+      } else {
+
+        // If the slackReq parameter is defined, then add the status code, headers
+        // and response
+        slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+
+        slackReq['attachments']['fields'].push(
+          {
+            "title": "Status Code",
+            "value": response.statusCode,
+            "short": true
+          }, {
+            "title": "Response Body",
+            "value": "```" + JSON.stringify(response.body) + "```",
+            "short": false
+          }, {
+            "title": "Response Headers",
+            "value": "```" + JSON.stringify(response.headers) + "```",
+            "short": false
+          }
+        );
+
+        // Post to Slack
+        // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
+
+      }
+
+    } else {
+
+      // Error response
+      var errorRes = {
+        "attachments": [
+          {
+            "fallback": "SENDGRID REQUEST FAILED",
+            "color": "#C10039",
+            "pretext": "SENDGRID REQUEST FAILED!",
+            "title": "SENDGRID REQUEST FAILED!",
+            "text": "The response from SendGrid is displayed below for more information.",
+            "fields": [
+              {
+                "title": "Status Code",
+                "value": response.statusCode,
+                "short": true
+              }, {
+                "title": "Response Body",
+                "value": "```" + JSON.stringify(response.body) + "```",
+                "short": false
+              }, {
+                "title": "Response Headers",
+                "value": "```" + JSON.stringify(response.headers) + "```",
+                "short": false
+              }
+            ]
+          }
+        ]
+      }
+
+      if (slackReq != undefined) {
+        errorRes['attachments']['text'] += "\nThis request is for the SendGrid Contacts API";
+      }
+
+      // Post to Slack
+      // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
+
+    }
+
+    // Log response
+    console.log('--RESPONSE BEGIN--');
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+    console.log('--RESPONSE END--\n');
   });
 }
 

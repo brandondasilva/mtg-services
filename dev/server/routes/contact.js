@@ -58,6 +58,7 @@ router.post ('/', function(req, res) {
     }]
   });
 
+  // Setting up the Slack post messages
   var slackParams = {
     "form": {
       "attachments": [
@@ -182,8 +183,8 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
   // Set up personalizations for the email template using the form data from the parameters
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name );
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname'] );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-subject-', form_data['subject']) );
 
