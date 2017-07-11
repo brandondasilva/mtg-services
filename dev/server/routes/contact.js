@@ -59,7 +59,7 @@ router.post ('/', function(req, res) {
 
   var mailinglistRequest = sg.emptyRequest({
     method: 'GET',
-    path: '/v3/contactdb/lists',
+    path: '/v3/contactdb/lists'
   });
 
   console.log(mailinglistRequest);
