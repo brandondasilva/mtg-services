@@ -128,7 +128,7 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   mail.personalizations[0].addSubstitution( new helper.Substitution('-device-', form_data['device']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-serial-', form_data['serial']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-country-', form_data['country']) );
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-date-', form_data['date']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-date-', purchase_date) );
 
   mail.setTemplateId(template_id); // Set the Template ID for the email content
 
