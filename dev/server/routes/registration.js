@@ -41,29 +41,57 @@ router.post ('/', function(req, res) {
   var to_email = new helper.Email('brandon@bdsdesign.co');
   var user_email = new helper.Email(req.body['email'], req.body['name']);
   var mtg_subject = "New contact form submission on the MTG website!";
-  var user_subject = "Medical Technologies Gateway - Contact Form Submission Confirmation";
+  var user_subject = "Medical Technologies Gateway - New Device Registration Confirmation";
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.REGISTRATION_MTG_TEMPLATE);
   var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.REGISTRATION_USER_TEMPLATE);
 
   var content = {
-    "attachments": [
-      {
-        "fallback": "A new request for a quote has been submitted.",
-        "color": "#36a64f",
-        "pretext": "A new request for a quote has been submitted.",
-        "title": "New Form Quote Submission",
-        "text": "The following are the contents of the form for reference.",
-        "fields": [
-          {
-            "title": "PAC Email Status code",
-            "value": "value",
-            "short": true
-          }
-        ]
-      }
-    ]
+    "form": {
+      "attachments": [
+        {
+          "fallback": "A new request for a quote has been submitted.",
+          "color": "#36a64f",
+          "pretext": "A new request for a quote has been submitted.",
+          "title": "New Form Quote Submission",
+          "text": "The following are the contents of the form for reference.",
+          "fields": [
+            {
+              "title": "PAC Email Status code",
+              "value": "value",
+              "short": true
+            }
+          ]
+        }
+      ]
+    },
+    "mailinglist": {
+      "attachments": [
+        {
+          "fallback": "A new contact has subscribed to the mailing list!",
+          "color": "#1BDB6C",
+          "pretext": "A new contact has subscribed to the mailing list!",
+          "title": "New Contact Added to the Mailing List",
+          "text": "The new subscriber's information and upload status is outlined below.",
+          "fields": [
+            {
+              "title": "First Name",
+              "value": req.body['firstname'],
+              "short": true
+            }, {
+              "title": "Last Name",
+              "value": req.body['lastname'],
+              "short": true
+            }, {
+              "title": "Email Address",
+              "value": req.body['email'],
+              "short": false
+            }
+          ]
+        }
+      ]
+    }
   }
 
   // Post to Slack
