@@ -43,6 +43,11 @@ router.post ('/', function(req, res) {
   var mtg_subject = "New contact form submission on the MTG website!";
   var user_subject = "Medical Technologies Gateway - New Device Registration Confirmation";
 
+  // Format purchase date
+  var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
+  req.body.push({ 'date': purchase_date });
+  console.log(req.body);
+
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.REGISTRATION_MTG_TEMPLATE);
   var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.REGISTRATION_USER_TEMPLATE);
@@ -52,15 +57,42 @@ router.post ('/', function(req, res) {
       "attachments": [
         {
           "fallback": "A new request for a quote has been submitted.",
-          "color": "#36a64f",
           "pretext": "A new request for a quote has been submitted.",
           "title": "New Form Quote Submission",
           "text": "The following are the contents of the form for reference.",
           "fields": [
             {
-              "title": "PAC Email Status code",
-              "value": "value",
+              "title": "First Name",
+              "value": req.body['firstname'],
               "short": true
+            }, {
+              "title": "Last Name",
+              "value": req.body['lastname'],
+              "short": true
+            }, {
+              "title": "Email Address",
+              "value": req.body['email'],
+              "short": false
+            }, {
+              "title": "Device",
+              "value": req.body['device'],
+              "short": true
+            }, {
+              "title": "Serial Number",
+              "value": req.body['serial'],
+              "short": true
+            }, {
+              "title": "Date of Purchase",
+              "value": purchase_date,
+              "short": true
+            }, {
+              "title": "Country of Purchase",
+              "value": req.body['country'],
+              "short": true
+            }, {
+              "title": "Added to mailing list?",
+              "value": (req.body['mailinglist'] == 'true') ? "Yes" : "No",
+              "short": false
             }
           ]
         }
@@ -99,8 +131,10 @@ router.post ('/', function(req, res) {
   sendgridRequest(request2, undefined);
 
   // Post to Slack
-  // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
-  // slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
+  // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
+
+  res.send(req.body);
 });
 
 /**
@@ -117,7 +151,6 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   var content = new helper.Content("text/html", " ");
 
   var name = form_data['firstname'] + ' ' + form_data['lastname'];
-  var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
 
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
@@ -128,7 +161,7 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
   mail.personalizations[0].addSubstitution( new helper.Substitution('-device-', form_data['device']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-serial-', form_data['serial']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-country-', form_data['country']) );
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-date-', purchase_date) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-date-', form_data['date']) );
 
   mail.setTemplateId(template_id); // Set the Template ID for the email content
 
