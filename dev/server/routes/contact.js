@@ -206,7 +206,7 @@ function sendgridRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
+    if (response.statusCode == 200 || response.statusCode == 202 || response.statusCode == 201) {
 
       if (slackReq == undefined) {
 
@@ -246,9 +246,15 @@ function sendgridRequest(req, slackReq) {
 
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
-        slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+        if (response.statusCode == 201) {
+          slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful (already signed up)!";
+          slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful (already signed up)!";
+          slackReq['attachments']['title'] = "SendGrid Contact Request Successful (already signed up)!";
+        } else {
+          slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
+          slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
+          slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+        }
 
         slackReq['attachments']['fields'].push(
           {
