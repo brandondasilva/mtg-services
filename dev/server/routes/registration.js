@@ -95,8 +95,8 @@ router.post ('/', function(req, res) {
   }
 
   // SendGrid requests for sending emails
-  // sendgridRequest(request1, undefined);
-  // sendgridRequest(request2, undefined);
+  sendgridRequest(request1, undefined);
+  sendgridRequest(request2, undefined);
 
   // Post to Slack
   // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
@@ -118,7 +118,6 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
 
   var name = form_data['firstname'] + ' ' + form_data['lastname'];
   var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
-  console.log(purchase_date);
 
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
