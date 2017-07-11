@@ -114,7 +114,7 @@ router.post ('/', function(req, res) {
  */
 function composeMail(from_email, subject, to_email, form_data, template_id) {
 
-  var content = new helper.Content("text/html", "");
+  var content = new helper.Content("text/html", " ");
 
   var name = form_data['firstname'] + ' ' + form_data['lastname'];
   var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
