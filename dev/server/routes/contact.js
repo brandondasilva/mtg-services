@@ -30,8 +30,6 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  console.log(req.body);
-
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
@@ -247,16 +245,16 @@ function sendgridRequest(req, slackReq) {
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
         if (response.statusCode == 201) {
-          slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful (already signed up)!";
-          slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful (already signed up)!";
-          slackReq['attachments']['title'] = "SendGrid Contact Request Successful (already signed up)!";
+          slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful (already signed up)!";
+          slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful (already signed up)!";
+          slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful (already signed up)!";
         } else {
-          slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
-          slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
-          slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+          slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful!";
+          slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful!";
+          slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful!";
         }
 
-        slackReq['attachments']['fields'].push(
+        slackReq['attachments'][0]['fields'].unshift(
           {
             "title": "Status Code",
             "value": response.statusCode,
