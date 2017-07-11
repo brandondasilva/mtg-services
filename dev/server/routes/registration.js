@@ -95,12 +95,12 @@ router.post ('/', function(req, res) {
   }
 
   // SendGrid requests for sending emails
-  sendgridRequest(request1, undefined);
-  sendgridRequest(request2, undefined);
+  // sendgridRequest(request1, undefined);
+  // sendgridRequest(request2, undefined);
 
   // Post to Slack
   // slackPost(content, process.env.PREMUS_SLACK_WEBHOOK);
-  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
+  // slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 });
 
 /**

@@ -17,17 +17,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet());
 
-// var registration = require('./routes/registration');
-// var news = require('./routes/news');
+// Forms
+var registration = require('./routes/registration');
 var stories = require('./routes/stories');
-// var support = require('./routes/support');
 var contact = require('./routes/contact');
 
-// app.use('/registration', registration);
-// app.use('/news', news);
+app.use('/registration', registration);
 app.use('/stories', stories);
-// app.use('/support', support);
 app.use('/contact', contact);
+
+// Other
+// var news = require('./routes/news');
+// var support = require('./routes/support');
+
+// app.use('/news', news);
+// app.use('/support', support);
 
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
