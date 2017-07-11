@@ -44,7 +44,7 @@ router.post ('/', function(req, res) {
   var user_subject = "Medical Technologies Gateway - New Device Registration Confirmation";
 
   // Format purchase date
-  var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
+  var purchase_date = moment(req.body['year'] + req.body['month'] + req.body['day']).format('L');
   req.body.push({ 'date': purchase_date });
   console.log(req.body);
 
