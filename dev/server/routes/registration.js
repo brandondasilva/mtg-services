@@ -30,7 +30,7 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  var name = req.body['firstname'] + ' ' + req.body['lastname'];
+  console.log(req.body);
 
   // Today's date for logging
   var d = new Date(); // Create new Date
@@ -71,11 +71,49 @@ router.post ('/', function(req, res) {
   slackPost(content, process.env.BDS_SLACK_WEBHOOK);
 });
 
-function composeMail() {
+/**
+ * Set up the mail information and template to be requested to be sent through SendGrid
+ *
+ * @param {String} from_email "From" email
+ * @param {String} subject Subject for the email
+ * @param {String} to_email "To" email
+ * @param {Object} form_data The information submitted on the form
+ * @param {String} template_id The ID of the template to use when sending the email
+ */
+function composeMail(from_email, subject, to_email, form_data, template_id) {
 
   var content = new helper.Content("text/html", "");
+
+  var name = form_data['firstname'] + ' ' + form_data['lastname'];
+  var purchase_date = moment(form_data['year'] + form_data['month'] + form_data['day']).format('L');
+
+  var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
+
+  // Set up personalizations for the email template using the form data from the parameters
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname'] );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-device-', form_data['device']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-serial-', form_data['serial']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-country-', form_data['country']) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-date-', form_data['date']) );
+
+  mail.setTemplateId(template_id); // Set the Template ID for the email content
+
+  // Return request to send to the SendGrid API
+  return sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: mail.toJSON()
+  });
 }
 
+/**
+ * Post the content being passed into the function to Slack through the webhook
+ *
+ * @param {Object} data The content to populate the Slack post
+ * @param {Object} webhook The content to populate the Slack post
+ */
 function slackPost(data, webhook) {
 
   request({
