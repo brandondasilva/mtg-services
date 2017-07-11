@@ -62,6 +62,8 @@ router.post ('/', function(req, res) {
     path: '/v3/contactdb/lists'
   });
 
+  sendgridRequest(mailinglistRequest, undefined);
+
   console.log(mailinglistRequest);
 
   // Setting up the Slack post messages
