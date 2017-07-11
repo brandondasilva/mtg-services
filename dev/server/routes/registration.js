@@ -45,7 +45,7 @@ router.post ('/', function(req, res) {
 
   // Format purchase date
   var purchase_date = moment(req.body['year'] + req.body['month'] + req.body['day']).format('L');
-  req.body.push({ 'date': purchase_date });
+  req.body['date'] = purchase_date;
   console.log(req.body);
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
