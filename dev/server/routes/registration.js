@@ -35,6 +35,7 @@ router.post ('/', function(req, res) {
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+  req.body['name'] = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
@@ -45,7 +46,6 @@ router.post ('/', function(req, res) {
 
   // Format purchase date
   req.body['date'] = moment(req.body['year'] + req.body['month'] + req.body['day']).format('L');
-  console.log(req.body);
 
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.REGISTRATION_MTG_TEMPLATE);
@@ -125,6 +125,48 @@ router.post ('/', function(req, res) {
     }
   }
 
+  googleSheets({
+    range: "Device Registration Submissions!A2:G",
+    values: [
+      [
+        date,
+        req.body['name'],
+        req.body['email'],
+        req.body['device'],
+        req.body['serial'],
+        req.body['date'],
+        req.body['country']
+      ]
+    ]
+  });
+
+  // Check to see if they want to be added to the mailing list
+  if (req.body['mailinglist'] == 'true') {
+
+    var contactRequest = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/contactdb/recipients',
+      body: [{
+        "email": req.body['email'],
+        "first_name": req.body['firstname'],
+        "last_name": req.body['lastname']
+      }]
+    });
+
+    sendgridContactRequest(contactRequest, slackParams['mailinglist']);
+
+    googleSheets({
+      range: "Mailing List!A2:C",
+      values: [
+        [
+          req.body['firstname'],
+          req.body['lastname'],
+          req.body['email']
+        ]
+      ]
+    });
+  }
+
   // SendGrid requests for sending emails
   sendgridRequest(request1, undefined);
   sendgridRequest(request2, undefined);
@@ -149,12 +191,10 @@ function composeMail(from_email, subject, to_email, form_data, template_id) {
 
   var content = new helper.Content("text/html", " ");
 
-  var name = form_data['firstname'] + ' ' + form_data['lastname'];
-
   var mail = new helper.Mail(from_email, subject, to_email, content); // Create mail helper
 
   // Set up personalizations for the email template using the form data from the parameters
-  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', name) );
+  mail.personalizations[0].addSubstitution( new helper.Substitution('-name-', form_data['name']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-firstname-', form_data['firstname']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-email-', form_data['email']) );
   mail.personalizations[0].addSubstitution( new helper.Substitution('-device-', form_data['device']) );
@@ -311,6 +351,70 @@ function slackPost(data, webhook) {
     json: true,
     body: data
   });
+}
+
+/**
+ * Google Sheets API request to post the information to the spreadsheet. The information
+ * on which page on the spreadsheet to post to as well as the appropriate cells on the
+ * spreadsheet are passed through as an Object through a parameter.
+ *
+ * @param {Object} content An object that contains the range and content to populate on Google Sheets
+ */
+function googleSheets(content) {
+
+  // Call function to authorize access to the Google API and send data to spreadsheet
+  authorize(function(authClient) {
+
+    // Create request object to send to the spreadsheet
+    var sheetReq = {
+      spreadsheetId: '1-AEh85B7NA-05DDWYe1dIqBdWwecBuJQqFWvxtUblvU',
+      range: content.range,
+      valueInputOption: 'RAW',
+      auth: authClient,
+      resource: {
+        majorDimension: 'ROWS',
+        values: content.values
+      }
+    };
+
+    // Append form data to the spreadsheet with the request sheetReq
+    sheets.spreadsheets.values.append(sheetReq, function(err, response) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  });
+}
+
+/**
+ * Authorize access to the Google API to update the spreadsheet
+ *
+ * @param {function} callback The callback to call
+ */
+function authorize(callback) {
+
+  if (oauth2Client == null) {
+    console.log('Google authentication failed');
+    return;
+  }
+
+  // Set credentials and tokens
+  oauth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+  oauth2Client.refreshAccessToken(function(err, tokens) { if (err) { console.log(err); } });
+
+  var scopes = [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/spreadsheets'
+  ]
+
+  var AuthUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes
+  });
+
+  callback(oauth2Client);
 }
 
 module.exports = router;

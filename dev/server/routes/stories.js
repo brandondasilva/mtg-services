@@ -30,8 +30,6 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  console.log(req.body);
-
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
@@ -47,17 +45,6 @@ router.post ('/', function(req, res) {
   // Construct email requests to be sent to MTG and a confirmation to the user using custom made templates
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.STORIES_MTG_TEMPLATE);
   var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.STORIES_USER_TEMPLATE);
-
-  // Check to see if they want to be added to the mailing list
-  var contactRequest = sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/recipients',
-    body: [{
-      "email": req.body['email'],
-      "first_name": req.body['firstname'],
-      "last_name": req.body['lastname']
-    }]
-  });
 
   // Setting up the Slack post messages
   var slackParams = {
@@ -134,7 +121,18 @@ router.post ('/', function(req, res) {
     ]
   });
 
+  // Check to see if they want to be added to the mailing list
   if (req.body['mailinglist'] == 'true') {
+
+    var contactRequest = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/contactdb/recipients',
+      body: [{
+        "email": req.body['email'],
+        "first_name": req.body['firstname'],
+        "last_name": req.body['lastname']
+      }]
+    });
 
     sendgridContactRequest(contactRequest, slackParams['mailinglist']);
 

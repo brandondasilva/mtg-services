@@ -46,17 +46,6 @@ router.post ('/', function(req, res) {
   var request1 = composeMail(from_email, mtg_subject, to_email, req.body, process.env.CONTACT_MTG_TEMPLATE);
   var request2 = composeMail(from_email, user_subject, user_email, req.body, process.env.CONTACT_USER_TEMPLATE);
 
-  // Check to see if they want to be added to the mailing list
-  var contactRequest = sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/recipients',
-    body: [{
-      "email": req.body['email'],
-      "first_name": req.body['firstname'],
-      "last_name": req.body['lastname']
-    }]
-  });
-
   // Setting up the Slack post messages
   var slackParams = {
     "form": {
@@ -125,7 +114,7 @@ router.post ('/', function(req, res) {
   }
 
   googleSheets({
-    range: "Contact Form Submissions!A2:H",
+    range: "Contact Form Submissions!A2:E",
     values: [
       [
         date,
@@ -137,7 +126,18 @@ router.post ('/', function(req, res) {
     ]
   });
 
+  // Check to see if they want to be added to the mailing list
   if (req.body['mailinglist'] == 'true') {
+
+    var contactRequest = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/contactdb/recipients',
+      body: [{
+        "email": req.body['email'],
+        "first_name": req.body['firstname'],
+        "last_name": req.body['lastname']
+      }]
+    });
 
     sendgridContactRequest(contactRequest, slackParams['mailinglist']);
 
