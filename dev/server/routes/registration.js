@@ -197,7 +197,7 @@ router.post ('/', function(req, res) {
   var test = sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/custom_fields',
-    body: [{
+    body: [
       {
         "name": "device",
         "type": "text"
@@ -211,7 +211,7 @@ router.post ('/', function(req, res) {
         "name": "country",
         "type": "text"
       }
-    }]
+    ]
   });
 
   sendgridRequest(test, undefined);
