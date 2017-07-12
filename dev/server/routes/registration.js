@@ -30,8 +30,6 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  console.log(req.body);
-
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
@@ -126,11 +124,11 @@ router.post ('/', function(req, res) {
     "devicelist": {
       "attachments": [
         {
-          "fallback": "A new contact has subscribed to the mailing list!",
+          "fallback": "New Device and Contact Registered on SendGrid",
           "color": "#1BDB6C",
-          "pretext": "A new contact has subscribed to the mailing list!",
-          "title": "New Contact Added to the Mailing List",
-          "text": "The new subscriber's information and upload status is outlined below.",
+          "pretext": "New Device and Contact Registered on SendGrid",
+          "title": "New Device and Contact Registered on SendGrid",
+          "text": "The new device information and upload status is outlined below.",
           "fields": [
             {
               "title": "First Name",
@@ -144,6 +142,22 @@ router.post ('/', function(req, res) {
               "title": "Email Address",
               "value": req.body['email'],
               "short": false
+            }, {
+              "title": "Device",
+              "value": req.body['device'],
+              "short": true
+            }, {
+              "title": "Serial Number",
+              "value": req.body['serial'],
+              "short": true
+            }, {
+              "title": "Date of Purchase",
+              "value": req.body['date'],
+              "short": true
+            }, {
+              "title": "Country of Purchase",
+              "value": req.body['country'],
+              "short": true
             }
           ]
         }
@@ -151,7 +165,6 @@ router.post ('/', function(req, res) {
     }
   }
 
-  /*
   googleSheets({
     range: "Device Registration Submissions!A2:G",
     values: [
@@ -167,6 +180,22 @@ router.post ('/', function(req, res) {
     ]
   });
 
+  var deviceRequest = sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/contactdb/recipients',
+    body: [{
+      "email": req.body['email'],
+      "first_name": req.body['firstname'],
+      "last_name": req.body['lastname'],
+      "device": req.body['device'],
+      "serial_number": req.body['serial'],
+      "date_of_purchase": req.body['date'],
+      "country": req.body['country']
+    }]
+  });
+
+  sendgridContactRequest(contactRequest, process.env.LIST_ID_DEVICE, slackParams['devicelist']);
+
   // Check to see if they want to be added to the mailing list
   if (req.body['mailinglist'] == 'true') {
 
@@ -180,7 +209,7 @@ router.post ('/', function(req, res) {
       }]
     });
 
-    sendgridContactRequest(contactRequest, slackParams['mailinglist']);
+    sendgridContactRequest(contactRequest, process.env.LIST_ID_MAILING, slackParams['mailinglist']);
 
     googleSheets({
       range: "Mailing List!A2:C",
@@ -192,71 +221,15 @@ router.post ('/', function(req, res) {
         ]
       ]
     });
-  }*/
-
-  var test = sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/custom_fields',
-    body: [
-      {
-        "name": "device",
-        "type": "text"
-      }, {
-        "name": "serial_number",
-        "type": "text"
-      }, {
-        "name": "date_of_purchase",
-        "type": "date"
-      }, {
-        "name": "country",
-        "type": "text"
-      }
-    ]
-  });
-
-  sendgridRequest(sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/custom_fields',
-    body: {
-      "name": "device",
-      "type": "text"
-    }
-  }), undefined);
-
-  sendgridRequest(sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/custom_fields',
-    body: {
-      "name": "serial_number",
-      "type": "text"
-    }
-  }), undefined);
-
-  sendgridRequest(sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/custom_fields',
-    body: {
-      "name": "date_of_purchase",
-      "type": "date"
-    }
-  }), undefined);
-
-  sendgridRequest(sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/contactdb/custom_fields',
-    body: {
-      "name": "country",
-      "type": "text"
-    }
-  }), undefined);
+  }
 
   // SendGrid requests for sending emails
-  // sendgridRequest(request1, undefined);
-  // sendgridRequest(request2, undefined);
+  sendgridRequest(request1, undefined);
+  sendgridRequest(request2, undefined);
 
   // Post to Slack
   // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
-  // slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
 });
@@ -345,11 +318,11 @@ function sendgridRequest(req, slackReq) {
 
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
-        slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful!";
 
-        slackReq['attachments']['fields'].push(
+        slackReq['attachments'][0]['fields'].push(
           {
             "title": "Status Code",
             "value": response.statusCode,
@@ -417,6 +390,36 @@ function sendgridRequest(req, slackReq) {
     console.log(response.body);
     console.log(response.headers);
     console.log('--RESPONSE END--\n');
+  });
+}
+
+/**
+ * Secondary SendGrid request to the API for uploading Contacts and segmenting them to the mailing list
+ *
+ * @param {Object} req The callback to send to SendGrid
+ * @param {configvar} req The config variable passed for the appropriate contact list on SendGrid
+ * @param {Object} slackReq The attachment content to post on Slack
+ */
+function sendgridContactRequest(req, list_id, slackReq) {
+
+  sg.API(req, function(error, response) {
+
+    // Log response
+    console.log('--RESPONSE BEGIN--');
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+    console.log('--RESPONSE END--\n');
+
+    var reqPath = '/v3/contactdb/lists/' + list_id + '/recipients/' + response.body['persisted_recipients'][0];
+
+    // Request to add the newly added contact to the appropriate list
+    var mailinglistRequest = sg.emptyRequest({
+      method: 'POST',
+      path: reqPath
+    });
+
+    sendgridRequest(mailinglistRequest, slackReq);
   });
 }
 
