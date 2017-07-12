@@ -57,14 +57,12 @@ router.post ('/', function(req, res) {
     }]
   });
 
-  var mailinglistRequest = sg.emptyRequest({
-    method: 'GET',
-    path: '/v3/contactdb/lists'
-  });
-
-  sendgridRequest(mailinglistRequest, undefined);
-
-  console.log(mailinglistRequest);
+  // var mailinglistRequest = sg.emptyRequest({
+  //   method: 'GET',
+  //   path: '/v3/contactdb/lists'
+  // });
+  //
+  // sendgridRequest(mailinglistRequest, undefined);
 
   // Setting up the Slack post messages
   var slackParams = {
@@ -148,7 +146,7 @@ router.post ('/', function(req, res) {
 
   if (req.body['mailinglist'] == 'true') {
 
-    sendgridRequest(contactRequest, slackParams['mailinglist']);
+    sendgridContactRequest(contactRequest, slackParams['mailinglist']);
 
     googleSheets({
       range: "Mailing List!A2:C",
@@ -325,6 +323,30 @@ function sendgridRequest(req, slackReq) {
     console.log(response.body);
     console.log(response.headers);
     console.log('--RESPONSE END--\n');
+  });
+}
+
+function sendgridContactRequest(req, slackReq) {
+
+  sg.API(req, function(error, response) {
+
+    // Log response
+    console.log('--RESPONSE BEGIN--');
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+    console.log('--RESPONSE END--\n');
+
+    var recipientID = response.body['persisted_recipients'][0];
+    console.log(recipientID);
+
+    var reqPath = '/v3/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + recipientID;
+    var mailinglistRequest = sg.emptyRequest({
+      method: 'POST',
+      path: reqPath
+    });
+
+    sendgridRequest(mailinglistRequest, slackReq);
   });
 }
 
