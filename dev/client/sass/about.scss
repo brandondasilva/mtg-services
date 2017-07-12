@@ -1,4 +1,28 @@
 // ABOUT PAGE
 .mission-images {
+  @media (min-width: 992px) and (max-width: 1230px) {
+    .banner-image.phone-about { left: 100px; }
+  }
 
+  @media (min-width: 1150px) and (max-width: 1230px) {
+    .banner-image {
+      &.first-aid-about { right: 60px; }
+
+      &.bandaid-about { right: 250px; }
+    }
+  }
+
+  @media (min-width: 1050px) and (max-width: 1149px) {
+    .banner-image {
+      &.blood-about { left: 325px; }
+
+      &.microscope-about { right: 275px; }
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1049px) {
+    .banner-image {
+      &.blood-about, &.microscope-about { display: none; }
+    }
+  }
 }
