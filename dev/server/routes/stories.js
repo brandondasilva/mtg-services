@@ -201,7 +201,7 @@ function sendgridRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
 
-    if (response.statusCode == 200 || response.statusCode == 202 || response.statusCode == 202) {
+    if (response.statusCode == 200 || response.statusCode == 202 || response.statusCode == 201) {
 
       if (slackReq == undefined) {
 
