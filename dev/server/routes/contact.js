@@ -347,7 +347,7 @@ function sendgridContactRequest(req, slackReq) {
       path: reqPath
     });
 
-    // sendgridRequest(mailinglistRequest, slackReq);
+    sendgridRequest(mailinglistRequest, slackReq);
   });
 }
 
