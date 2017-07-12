@@ -165,6 +165,7 @@ router.post ('/', function(req, res) {
     }
   }
 
+  // Updating the Google Sheet spreadsheet with the form submission
   googleSheets({
     range: "Device Registration Submissions!A2:G",
     values: [
@@ -180,6 +181,7 @@ router.post ('/', function(req, res) {
     ]
   });
 
+  // Sending the new contact to the general contact list with all of the custom fields
   var deviceRequest = sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/recipients',
@@ -397,7 +399,7 @@ function sendgridRequest(req, slackReq) {
  * Secondary SendGrid request to the API for uploading Contacts and segmenting them to the mailing list
  *
  * @param {Object} req The callback to send to SendGrid
- * @param {configvar} req The config variable passed for the appropriate contact list on SendGrid
+ * @param {configvar} list_id The config variable passed for the appropriate contact list on SendGrid
  * @param {Object} slackReq The attachment content to post on Slack
  */
 function sendgridContactRequest(req, list_id, slackReq) {

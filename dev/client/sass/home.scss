@@ -1,0 +1,57 @@
+// HOME PAGE
+.home-banner {
+  @media (min-width: 1251px) and (max-width: 1290px) {
+
+    .home-banner-images {
+      .banner-image {
+        &.blood-pressure { width: 175px; }
+
+        &.microscope { width: 150px; }
+
+        &.phone { top: 225px; }
+
+        &.stethescope { left: 85px; }
+
+        &.bandaid {
+          top: 400px;
+          right: 175px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1250px) {
+    .home-banner-images {
+      .banner-image {
+        &.blood-pressure, &.microscope, &.stethescope, &.bandaid { display: none; }
+
+        &.phone {
+          top: 0px;
+          left: -60px;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1125px) and (max-width: 1250px) {
+    .home-banner-content {
+      .home-mission { width: 95%; }
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1124px) {
+    .home-banner-images {
+      .banner-image {
+        &.laptop { width: 400px; }
+
+        &.phone { width: 275px; }
+
+        &.chart { width: 250px; }
+
+        &.chart2 { width: 200px; }
+
+        &.first-aid { width: 300px; }
+      }
+    }
+  }
+}
