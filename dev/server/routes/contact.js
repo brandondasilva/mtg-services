@@ -341,12 +341,13 @@ function sendgridContactRequest(req, slackReq) {
     console.log(recipientID);
 
     var reqPath = '/v3/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + recipientID;
+    console.log(reqPath);
     var mailinglistRequest = sg.emptyRequest({
       method: 'POST',
       path: reqPath
     });
 
-    sendgridRequest(mailinglistRequest, slackReq);
+    // sendgridRequest(mailinglistRequest, slackReq);
   });
 }
 
