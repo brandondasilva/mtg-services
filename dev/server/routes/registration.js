@@ -217,37 +217,37 @@ router.post ('/', function(req, res) {
   sendgridRequest(sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/custom_fields',
-    body: [{
+    body: {
       "name": "device",
       "type": "text"
-    }]
+    }
   }), undefined);
 
   sendgridRequest(sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/custom_fields',
-    body: [{
+    body: {
       "name": "serial_number",
       "type": "text"
-    }]
+    }
   }), undefined);
 
   sendgridRequest(sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/custom_fields',
-    body: [{
+    body: {
       "name": "date_of_purchase",
       "type": "date"
-    }]
+    }
   }), undefined);
 
   sendgridRequest(sg.emptyRequest({
     method: 'POST',
     path: '/v3/contactdb/custom_fields',
-    body: [{
+    body: {
       "name": "country",
       "type": "text"
-    }]
+    }
   }), undefined);
 
   // SendGrid requests for sending emails
