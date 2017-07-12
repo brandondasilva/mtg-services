@@ -122,9 +122,36 @@ router.post ('/', function(req, res) {
           ]
         }
       ]
+    },
+    "devicelist": {
+      "attachments": [
+        {
+          "fallback": "A new contact has subscribed to the mailing list!",
+          "color": "#1BDB6C",
+          "pretext": "A new contact has subscribed to the mailing list!",
+          "title": "New Contact Added to the Mailing List",
+          "text": "The new subscriber's information and upload status is outlined below.",
+          "fields": [
+            {
+              "title": "First Name",
+              "value": req.body['firstname'],
+              "short": true
+            }, {
+              "title": "Last Name",
+              "value": req.body['lastname'],
+              "short": true
+            }, {
+              "title": "Email Address",
+              "value": req.body['email'],
+              "short": false
+            }
+          ]
+        }
+      ]
     }
   }
 
+  /*
   googleSheets({
     range: "Device Registration Submissions!A2:G",
     values: [
@@ -165,15 +192,37 @@ router.post ('/', function(req, res) {
         ]
       ]
     });
-  }
+  }*/
+
+  var test = sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/contactdb/custom_fields',
+    body: [{
+      {
+        "name": "device",
+        "type": "text"
+      }, {
+        "name": "serial_number",
+        "type": "text"
+      }, {
+        "name": "date_of_purchase",
+        "type": "date"
+      }, {
+        "name": "country",
+        "type": "text"
+      }
+    }]
+  });
+
+  sendgridRequest(test, undefined);
 
   // SendGrid requests for sending emails
-  sendgridRequest(request1, undefined);
-  sendgridRequest(request2, undefined);
+  // sendgridRequest(request1, undefined);
+  // sendgridRequest(request2, undefined);
 
   // Post to Slack
   // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
-  slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
+  // slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
 });
