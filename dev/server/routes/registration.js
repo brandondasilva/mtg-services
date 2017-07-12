@@ -375,7 +375,7 @@ function sendgridRequest(req, slackReq) {
       }
 
       if (slackReq != undefined) {
-        errorRes['attachments']['text'] += "\nThis request is for the SendGrid Contacts API";
+        errorRes['attachments'][0]['text'] += "\nThis request is for the SendGrid Contacts API";
       }
 
       // Post to Slack
