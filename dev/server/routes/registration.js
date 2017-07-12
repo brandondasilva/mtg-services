@@ -194,7 +194,7 @@ router.post ('/', function(req, res) {
     }]
   });
 
-  sendgridContactRequest(contactRequest, process.env.LIST_ID_DEVICE, slackParams['devicelist']);
+  sendgridContactRequest(deviceRequest, process.env.LIST_ID_DEVICE, slackParams['devicelist']);
 
   // Check to see if they want to be added to the mailing list
   if (req.body['mailinglist'] == 'true') {
