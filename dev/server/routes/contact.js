@@ -57,13 +57,6 @@ router.post ('/', function(req, res) {
     }]
   });
 
-  // var mailinglistRequest = sg.emptyRequest({
-  //   method: 'GET',
-  //   path: '/v3/contactdb/lists'
-  // });
-  //
-  // sendgridRequest(mailinglistRequest, undefined);
-
   // Setting up the Slack post messages
   var slackParams = {
     "form": {
@@ -164,7 +157,7 @@ router.post ('/', function(req, res) {
   sendgridRequest(request2, undefined);
 
   // Post to Slack
-  // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
@@ -244,7 +237,6 @@ function sendgridRequest(req, slackReq) {
         }
 
         // Post to Slack
-        // slackPost(confirmationRes, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(confirmationRes, process.env.BDS_SLACK_WEBHOOK);
 
       } else {
@@ -272,7 +264,7 @@ function sendgridRequest(req, slackReq) {
         );
 
         // Post to Slack
-        // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
 
       }
@@ -312,7 +304,7 @@ function sendgridRequest(req, slackReq) {
       }
 
       // Post to Slack
-      // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
       slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
 
     }
@@ -326,6 +318,12 @@ function sendgridRequest(req, slackReq) {
   });
 }
 
+/**
+ * Secondary SendGrid request to the API for uploading Contacts and segmenting them to the mailing list
+ *
+ * @param {Object} req The callback to send to SendGrid
+ * @param {Object} slackReq The attachment content to post on Slack
+ */
 function sendgridContactRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
@@ -337,11 +335,9 @@ function sendgridContactRequest(req, slackReq) {
     console.log(response.headers);
     console.log('--RESPONSE END--\n');
 
-    var recipientID = response.body['persisted_recipients'][0];
-    console.log(recipientID);
+    var reqPath = '/v3/contactdb/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + response.body['persisted_recipients'][0];
 
-    var reqPath = '/v3/contactdb/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + recipientID;
-    console.log(reqPath);
+    // Request to add the newly added contact to the appropriate list
     var mailinglistRequest = sg.emptyRequest({
       method: 'POST',
       path: reqPath

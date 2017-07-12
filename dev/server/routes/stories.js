@@ -16,11 +16,11 @@ var googleAuth = google.auth.OAuth2;
 var sheets = google.sheets('v4');
 
 // Set up the OAuth2 Client using the environment variables from Heroku
-// var oauth2Client = new googleAuth(
-//   process.env.GOOGLE_CLIENT_ID,
-//   process.env.GOOGLE_CLIENT_SECRET,
-//   process.env.GOOGLE_REDIRECT_URL
-// );
+var oauth2Client = new googleAuth(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URL
+);
 
 router.get ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
@@ -35,6 +35,7 @@ router.post ('/', function(req, res) {
   // Today's date for logging
   var d = new Date(); // Create new Date
   var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+  req.body['name'] = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
   var from_email = new helper.Email('info@medtechgateway.com', "Medical Technologies Gateway");
@@ -121,15 +122,13 @@ router.post ('/', function(req, res) {
     }
   }
 
-  /*
   googleSheets({
-    range: "Contact Form Submissions!A2:H",
+    range: "Featured Stories Submissions!A2:H",
     values: [
       [
         date,
-        name,
+        req.body['name'],
         req.body['email'],
-        req.body['subject'],
         req.body['message']
       ]
     ]
@@ -137,7 +136,7 @@ router.post ('/', function(req, res) {
 
   if (req.body['mailinglist'] == 'true') {
 
-    sendgridRequest(contactRequest, slackParams['mailinglist']);
+    sendgridContactRequest(contactRequest, slackParams['mailinglist']);
 
     googleSheets({
       range: "Mailing List!A2:C",
@@ -150,13 +149,12 @@ router.post ('/', function(req, res) {
       ]
     });
   }
-  */
 
   sendgridRequest(request1, undefined);
   sendgridRequest(request2, undefined);
 
   // Post to Slack
-  // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
@@ -236,7 +234,6 @@ function sendgridRequest(req, slackReq) {
         }
 
         // Post to Slack
-        // slackPost(confirmationRes, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(confirmationRes, process.env.BDS_SLACK_WEBHOOK);
 
       } else {
@@ -264,7 +261,7 @@ function sendgridRequest(req, slackReq) {
         );
 
         // Post to Slack
-        // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
 
       }
@@ -304,7 +301,7 @@ function sendgridRequest(req, slackReq) {
       }
 
       // Post to Slack
-      // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
       slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
 
     }
@@ -315,6 +312,35 @@ function sendgridRequest(req, slackReq) {
     console.log(response.body);
     console.log(response.headers);
     console.log('--RESPONSE END--\n');
+  });
+}
+
+/**
+ * Secondary SendGrid request to the API for uploading Contacts and segmenting them to the mailing list
+ *
+ * @param {Object} req The callback to send to SendGrid
+ * @param {Object} slackReq The attachment content to post on Slack
+ */
+function sendgridContactRequest(req, slackReq) {
+
+  sg.API(req, function(error, response) {
+
+    // Log response
+    console.log('--RESPONSE BEGIN--');
+    console.log(response.statusCode);
+    console.log(response.body);
+    console.log(response.headers);
+    console.log('--RESPONSE END--\n');
+
+    var reqPath = '/v3/contactdb/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + response.body['persisted_recipients'][0];
+
+    // Request to add the newly added contact to the appropriate list
+    var mailinglistRequest = sg.emptyRequest({
+      method: 'POST',
+      path: reqPath
+    });
+
+    sendgridRequest(mailinglistRequest, slackReq);
   });
 }
 
