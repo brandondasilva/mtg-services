@@ -230,7 +230,7 @@ router.post ('/', function(req, res) {
   sendgridRequest(request2, undefined);
 
   // Post to Slack
-  // slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
+  slackPost(slackParams['form'], process.env.PREMUS_SLACK_WEBHOOK);
   slackPost(slackParams['form'], process.env.BDS_SLACK_WEBHOOK);
 
   res.send(req.body);
@@ -313,7 +313,6 @@ function sendgridRequest(req, slackReq) {
         }
 
         // Post to Slack
-        // slackPost(confirmationRes, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(confirmationRes, process.env.BDS_SLACK_WEBHOOK);
 
       } else {
@@ -341,7 +340,7 @@ function sendgridRequest(req, slackReq) {
         );
 
         // Post to Slack
-        // slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
+        slackPost(slackReq, process.env.PREMUS_SLACK_WEBHOOK);
         slackPost(slackReq, process.env.BDS_SLACK_WEBHOOK);
 
       }
@@ -381,7 +380,7 @@ function sendgridRequest(req, slackReq) {
       }
 
       // Post to Slack
-      // slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
+      slackPost(errorRes, process.env.PREMUS_SLACK_WEBHOOK);
       slackPost(errorRes, process.env.BDS_SLACK_WEBHOOK);
 
     }
