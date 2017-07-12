@@ -240,11 +240,11 @@ function sendgridRequest(req, slackReq) {
 
         // If the slackReq parameter is defined, then add the status code, headers
         // and response
-        slackReq['attachments']['fallback'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['pretext'] = "SendGrid Contact Request Successful!";
-        slackReq['attachments']['title'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['fallback'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['pretext'] = "SendGrid Contact Request Successful!";
+        slackReq['attachments'][0]['title'] = "SendGrid Contact Request Successful!";
 
-        slackReq['attachments']['fields'].push(
+        slackReq['attachments'][0]['fields'].push(
           {
             "title": "Status Code",
             "value": response.statusCode,
