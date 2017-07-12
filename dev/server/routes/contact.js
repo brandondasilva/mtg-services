@@ -340,7 +340,7 @@ function sendgridContactRequest(req, slackReq) {
     var recipientID = response.body['persisted_recipients'][0];
     console.log(recipientID);
 
-    var reqPath = '/v3/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + recipientID;
+    var reqPath = '/v3/contactdb/lists/' + process.env.LIST_ID_MAILING + '/recipients/' + recipientID;
     console.log(reqPath);
     var mailinglistRequest = sg.emptyRequest({
       method: 'POST',
