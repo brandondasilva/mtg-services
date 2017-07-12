@@ -123,7 +123,7 @@ router.post ('/', function(req, res) {
   }
 
   googleSheets({
-    range: "Featured Stories Submissions!A2:H",
+    range: "Featured Stories Submissions!A2:D",
     values: [
       [
         date,
@@ -201,7 +201,7 @@ function sendgridRequest(req, slackReq) {
 
   sg.API(req, function(error, response) {
 
-    if (response.statusCode == 200 || response.statusCode == 202) {
+    if (response.statusCode == 200 || response.statusCode == 202 || response.statusCode == 202) {
 
       if (slackReq == undefined) {
 
