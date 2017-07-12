@@ -383,6 +383,14 @@ function googleSheets(content) {
         values: content.values
       }
     };
+
+    // Append form data to the spreadsheet with the request sheetReq
+    sheets.spreadsheets.values.append(sheetReq, function(err, response) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
   });
 }
 
