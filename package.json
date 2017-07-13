@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "The backend services for Medical Technologies Gateway",
   "engines": {
-    "node": "5.9.1"
+    "node": "6.11.1"
   },
   "main": "index.js",
   "scripts": {
