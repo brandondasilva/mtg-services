@@ -27,10 +27,10 @@ app.use('/stories', stories);
 app.use('/contact', contact);
 
 // Other
-// var news = require('./routes/news');
+var news = require('./routes/news');
 // var support = require('./routes/support');
 
-// app.use('/news', news);
+app.use('/news', news);
 // app.use('/support', support);
 
 app.get('/', function(req, res) {
