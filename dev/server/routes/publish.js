@@ -19,11 +19,11 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  res.send({
-    "response_type": "ephemeral",
-    "replace_original": false,
-    "text": "Working..."
-  });
+  // res.send({
+  //   "response_type": "ephemeral",
+  //   "replace_original": false,
+  //   "text": "Working..."
+  // });
 
   console.log(req.body);
 
@@ -50,7 +50,7 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
     */
   } else {
-    res.send({
+    res.status(500).send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Sorry, that didn't work. Please check Webflow for errors."
@@ -70,7 +70,11 @@ router.post ('/', function(req, res) {
     }
   });
 
-
+  res.status(500).send({
+    "response_type": "ephemeral",
+    "replace_original": false,
+    "text": "Something went wrong."
+  });
 });
 
 module.exports = router;
