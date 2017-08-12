@@ -23,9 +23,33 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
+  var newsPost = {
+    'url': req.body['url']
+  }
+
   var client = new MetaInspector(req.body['url'], { timeout: 5000 });
+  client.fetch();
+
+  if (req.body['title'] == undefined) {
+    newsPost['title'] = client.title;
+  } else {
+    newsPost['title'] = req.body['title'];
+  }
+
+  if (req.body['description'] == undefined) {
+    newsPost['description'] = client.description;
+  } else {
+    newsPost['description'] = req.body['description'];
+  }
+
+  if (req.body['image'] == undefined) {
+    newsPost['image'] = client.image;
+  } else {
+    newsPost['image'] = req.body['image'];
+  }
 
   console.log(client);
+  console.log(newsPost);
 
   // Create Webflow item to push to the CMS
   /*var item = webflow.createItem({
