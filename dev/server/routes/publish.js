@@ -30,7 +30,7 @@ router.post ('/', function(req, res) {
   var payload = originalMessage['attachments'][2];
 
   console.log(actions);
-  console.log(originalMessage);
+  console.log(payload);
 
   if (actions["actions"][0]["value"] == "no") {
     payload.push({
