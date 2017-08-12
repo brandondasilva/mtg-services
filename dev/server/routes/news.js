@@ -75,7 +75,6 @@ router.post ('/', function(req, res) {
           {
             "title": "New News Post to Webflow",
             "color": "#36a64f",
-            "image_url": newsPost['image'],
             "text": "This needs to be published to the Webflow CMS using the Webflow Editor",
             "fields": [
               {
@@ -91,7 +90,8 @@ router.post ('/', function(req, res) {
                 "value": newsPost['url'],
                 "short": false
               }
-            ]
+            ],
+            "image_url": newsPost['image']
           },
           {
             "fallback": "Publish to Webflow?",
