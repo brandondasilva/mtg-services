@@ -27,8 +27,8 @@ app.use('/stories', stories);
 app.use('/contact', contact);
 
 // News
-var news = require('./routes/news');
-var publish = require('./routes/publish');
+var news = require('./routes/news/news');
+var publish = require('./routes/news/publish');
 
 app.use('/news', news);
 app.use('/news/publish', publish);
@@ -40,7 +40,7 @@ app.use('/news/publish', publish);
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  res.status(200).send('ok');
+  res.send('ok');
 });
 
 app.listen(app.get('port'), function() {

@@ -23,7 +23,11 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
-  var newsPost = { 'url': req.body['url'] }
+  if (req.body['url'] == undefined) {
+    var newsPost = { 'url': req.body['text'] }
+  } else {
+    var newsPost = { 'url': req.body['url'] }
+  }
 
   var client = new MetaInspector(req.body['url'], { timeout: 5000 });
 
