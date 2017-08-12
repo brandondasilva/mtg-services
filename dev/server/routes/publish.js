@@ -50,8 +50,9 @@ router.post ('/', function(req, res) {
     */
   } else {
     payload = { "text": "Sorry, that didn't work. Please check Webflow for errors." };
-
   }
+
+  console.log(payload);
 
   request({
     url: actions['response_url'],
@@ -65,11 +66,11 @@ router.post ('/', function(req, res) {
     }
   });
 
-  res.status(500).send({
-    "response_type": "ephemeral",
-    "replace_original": false,
-    "text": "Something went wrong."
-  });
+  // res.status(500).send({
+  //   "response_type": "ephemeral",
+  //   "replace_original": false,
+  //   "text": "Something went wrong."
+  // });
 });
 
 module.exports = router;
