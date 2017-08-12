@@ -33,6 +33,7 @@ router.post ('/', function(req, res) {
 
   console.log(actions);
   console.log(actions['actions']);
+  console.log(actions[0]);
 
   if (actions["actions"][0]["value"] == "no") {
     payload = { "text": "Not Published. You can check out the added posting on Webflow Editor." };
