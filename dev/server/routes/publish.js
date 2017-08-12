@@ -26,11 +26,8 @@ router.post ('/', function(req, res) {
   var actions = JSON.parse(req.body['payload']);
 
   var originalMessage = actions['original_message'];
-  originalMessage['attachments'][1]['actions'] = [];
+  originalMessage['attachments'][2]['actions'] = [];
   var payload = originalMessage['attachments'][2];
-
-  console.log(actions);
-  console.log(payload);
 
   if (actions["actions"][0]["value"] == "no") {
     payload["text"] = "Not Published. You can check out the added posting on Webflow Editor."
@@ -50,7 +47,7 @@ router.post ('/', function(req, res) {
     payload["text"] = "Sorry, that didn't work. Please check Webflow for errors."
   }
 
-  console.log(payload);
+  console.log(originalMessage);
   originalMessage['attachments'][2] = payload;
   console.log(originalMessage);
 
