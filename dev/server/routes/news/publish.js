@@ -19,6 +19,8 @@ router.post ('/', function(req, res) {
 
   res.send();
 
+  console.log(req.body);
+
   var actions = JSON.parse(req.body['payload']);
 
   var originalMessage = actions['original_message'];

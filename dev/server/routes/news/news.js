@@ -58,7 +58,7 @@ router.post ('/', function(req, res) {
       collectionId: '58be4ff264167da73c14db28',
       fields: {
         'name': newsPost['title'],
-        'slug': 'testing-it-out',
+        'slug': 'news-post',
         '_archived': false,
         '_draft': false,
         'article-link': newsPost['url'],
