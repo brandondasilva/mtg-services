@@ -34,6 +34,7 @@ router.post ('/', function(req, res) {
   }
 
   console.log(actions);
+  console.log(actions["actions"]);
 
   if (actions["actions"][0]["value"] == "no") {
     payload = {
