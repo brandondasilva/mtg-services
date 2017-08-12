@@ -28,7 +28,7 @@ router.post ('/', function(req, res) {
   console.log(client);
 
   // Create Webflow item to push to the CMS
-  var item = webflow.createItem({
+  /*var item = webflow.createItem({
     collectionId: '',
     fields: {
       'name': ,
@@ -41,7 +41,7 @@ router.post ('/', function(req, res) {
   });
 
   // HTTP POST to Slack Webhook to post an update on Slack
-  /*request({
+  request({
     url: process.env.BDS_SLACK_WEBHOOK,
     method: "POST",
     json: true,
