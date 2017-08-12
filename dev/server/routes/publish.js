@@ -50,10 +50,9 @@ router.post ('/', function(req, res) {
     payload["text"] = "Sorry, that didn't work. Please check Webflow for errors."
   }
 
-
-  attachments[1]['text'] = "";
-
   console.log(payload);
+  originalMessage['attachments'][2] = payload;
+  console.log(originalMessage);
 
   request({
     url: actions['response_url'],
