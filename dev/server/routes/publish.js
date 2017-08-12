@@ -25,28 +25,22 @@ router.post ('/', function(req, res) {
 
   var actions = JSON.parse(req.body['payload']);
 
-  var payload = {
-    "response_type": "ephemeral",
-    "replace_original": false,
-    "text": ""
-  }
+  var originalMessage = actions['original_message'];
+  delete originalMessage['attachments'][0]['actions'];
+  payload = originalMessage['attachments'];
 
   console.log(actions);
-  console.log(actions['actions']);
+  console.log(originalMessage);
 
   if (actions["actions"][0]["value"] == "no") {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
+    payload[0].push({
       "text": "Not Published. You can check out the added posting on Webflow Editor."
-    };
+    });
 
   } else if (actions["actions"][0]["value"] == "publish") {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
+    payload[0].push({
       "text": "Published!"
-    };
+    });
 
     // Publish on Webflow
     var publish = webflow.publishSite({
@@ -55,14 +49,15 @@ router.post ('/', function(req, res) {
     });
 
     publish.then(p => console.log(p));
-    
+
   } else {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
+    payload[0].push({
       "text": "Sorry, that didn't work. Please check Webflow for errors."
-    };
+    });
   }
+
+
+  attachments[1]['text'] = "";
 
   console.log(payload);
 
@@ -70,7 +65,7 @@ router.post ('/', function(req, res) {
     url: actions['response_url'],
     method: "POST",
     json: true,
-    body: payload,
+    body: { payload },
     function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body);

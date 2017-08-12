@@ -94,8 +94,23 @@ router.post ('/', function(req, res) {
                 "value": newsPost['url'],
                 "short": false
               }
-            ],
-          },
+            ]
+          }
+        ]
+      }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          console.log(body);
+        }
+      }
+    });
+
+
+    request({
+      url: process.env.BDS_SLACK_WEBHOOK,
+      method: "POST",
+      json: true,
+      body: {
+        "attachments": [
           {
             "fallback": "Publish to Webflow?",
             "title": "Publish to Webflow?",
