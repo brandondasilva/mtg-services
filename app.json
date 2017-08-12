@@ -1,3 +1,8 @@
 {
-  "name": "MTG Services"
+  "name": "MTG Services",
+  "env": {
+    "WEBFLOW_TOKEN": { "required": true },
+    "BDS_SLACK_WEBHOOK": { "required": true },
+    "PREMUS_SLACK_WEBHOOK": { "required": true }
+  }
 }
