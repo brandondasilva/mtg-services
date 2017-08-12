@@ -1,8 +1,6 @@
 
 'use strict';
 
-var moment = require('moment-timezone');
-
 var express = require('express');
 var request = require('request');
 var router = express.Router();
@@ -25,7 +23,7 @@ router.post ('/', function(req, res) {
     "text": "Working..."
   });
 
-  var actions = req.body['payload'];
+  var actions = req.body[payload];
 
   var payload = {
     "response_type": "ephemeral",
@@ -37,18 +35,10 @@ router.post ('/', function(req, res) {
   console.log(actions["actions"]);
 
   if (actions["actions"][0]["value"] == "no") {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
-      "text": "Not Published. You can check out the added posting on Webflow Editor."
-    };
+    payload = { "text": "Not Published. You can check out the added posting on Webflow Editor." };
 
   } else if (actions["actions"][0]["value"] == "publish") {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
-      "text": "Published!"
-    };
+    payload = { "text": "Published!" };
 
     /*// Publish on Webflow
     var publish = webflow.publishSite({
@@ -59,11 +49,7 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
     */
   } else {
-    payload = {
-      "response_type": "ephemeral",
-      "replace_original": false,
-      "text": "Sorry, that didn't work. Please check Webflow for errors."
-    };
+    payload = { "text": "Sorry, that didn't work. Please check Webflow for errors." };
 
   }
 
