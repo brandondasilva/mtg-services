@@ -25,16 +25,18 @@ router.post ('/', function(req, res) {
   //   "text": "Working..."
   // });
 
+  var actions = req.body['payload'];
+
   console.log(req.body);
 
-  if (req.body['actions'][0]['value'] == "no") {
+  if (actions['actions'][0]['value'] == "no") {
     res.send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Thanks. You can check out the added posting on Webflow Editor."
     });
 
-  } else if (req.body['actions'][0]['value'] == "publish") {
+  } else if (actions['actions'][0]['value'] == "publish") {
     res.send({
       "response_type": "ephemeral",
       "replace_original": false,
@@ -59,7 +61,7 @@ router.post ('/', function(req, res) {
   }
 
   request({
-    url: req.body['response_url'],
+    url: actions['response_url'],
     method: "POST",
     json: true,
     body: payload,
