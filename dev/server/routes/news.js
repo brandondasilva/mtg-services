@@ -21,7 +21,18 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  console.log(req.body);
+  request({
+    url: 'https://api.webflow.com/sites',
+    method: "GET",
+    json: true,
+    function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body);
+      }
+    }
+  })
+
+  /*console.log(req.body);
 
   var newsPost = { 'url': req.body['url'] }
 
@@ -58,13 +69,13 @@ router.post ('/', function(req, res) {
     console.log(err);
   });
 
-  client.fetch();
+  client.fetch();*/
 
-  // Create Webflow item to push to the CMS
+  // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
   /*var item = webflow.createItem({
     collectionId: '',
     fields: {
-      'name': ,
+      'name': newsPost['title'],
       'slug': ,
       '_archived': ,
       '_draft': ,
