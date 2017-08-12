@@ -51,6 +51,20 @@ router.post ('/', function(req, res) {
     }
 
     console.log(newsPost);
+
+    // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
+    var item = webflow.createItem({
+      collectionId: '58be4ff264167da73c14db28',
+      fields: {
+        'name': newsPost['title'],
+        'slug': 'testing-it-out',
+        '_archived': false,
+        '_draft': false,
+        'article-link': newsPost['url'],
+        'image-link': newsPost['image'],
+        'meta-description': newsPost['description']
+      }
+    });
   });
 
   client.on("error", function(err){
@@ -59,19 +73,7 @@ router.post ('/', function(req, res) {
 
   client.fetch();
 
-  // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
-  var item = webflow.createItem({
-    collectionId: '58be4ff264167da73c14db28',
-    fields: {
-      'name': newsPost['title'],
-      'slug': 'testing-it-out',
-      '_archived': false,
-      '_draft': false,
-      'article-link': newsPost['url'],
-      'image-link': newsPost['image'],
-      'meta-description': newsPost['description']
-    }
-  });
+
 
   // HTTP POST to Slack Webhook to post an update on Slack
   /*request({
