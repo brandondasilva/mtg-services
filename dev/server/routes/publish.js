@@ -26,21 +26,17 @@ router.post ('/', function(req, res) {
   var actions = JSON.parse(req.body['payload']);
 
   var originalMessage = actions['original_message'];
-  delete originalMessage['attachments'][1]['actions'];
+  originalMessage['attachments'][1]['actions'] = [];
   var payload = originalMessage['attachments'][2];
 
   console.log(actions);
   console.log(payload);
 
   if (actions["actions"][0]["value"] == "no") {
-    payload.push({
-      "text": "Not Published. You can check out the added posting on Webflow Editor."
-    });
+    payload["text"] = "Not Published. You can check out the added posting on Webflow Editor."
 
   } else if (actions["actions"][0]["value"] == "publish") {
-    payload.push({
-      "text": "Published!"
-    });
+    payload["text"] = "Published!"
 
     // Publish on Webflow
     var publish = webflow.publishSite({
@@ -51,9 +47,7 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
 
   } else {
-    payload.push({
-      "text": "Sorry, that didn't work. Please check Webflow for errors."
-    });
+    payload["text"] = "Sorry, that didn't work. Please check Webflow for errors."
   }
 
 
