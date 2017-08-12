@@ -27,21 +27,19 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
-  var payload = {};
-
   if (req.body['actions']['value'] == "no") {
-    payload = {
+    res.send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Thanks. You can check out the added posting on Webflow Editor."
-    };
+    });
 
   } else if (req.body['actions']['value'] == "publish") {
-    payload = {
+    res.send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Published!"
-    };
+    });
 
     /*// Publish on Webflow
     var publish = webflow.publishSite({
@@ -52,11 +50,11 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
     */
   } else {
-    payload = {
+    res.send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Sorry, that didn't work. Please check Webflow for errors."
-    };
+    });
 
   }
 
