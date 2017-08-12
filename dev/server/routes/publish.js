@@ -25,4 +25,9 @@ router.post ('/', function(req, res) {
     siteId: '58be0ec3d9b8619b4a64d0d3',
     domains: ['mtg2017.webflow.io']
   });*/
+
+  res.send(req.body);
 });
+
+
+module.exports = router;
