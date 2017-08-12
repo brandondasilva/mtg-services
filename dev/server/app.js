@@ -26,11 +26,15 @@ app.use('/registration', registration);
 app.use('/stories', stories);
 app.use('/contact', contact);
 
-// Other
+// News
 var news = require('./routes/news');
-// var support = require('./routes/support');
+var publish = require('./routes/publish');
 
 app.use('/news', news);
+app.use('/news/publish', publish);
+
+// Support
+// var support = require('./routes/support');
 // app.use('/support', support);
 
 app.get('/', function(req, res) {

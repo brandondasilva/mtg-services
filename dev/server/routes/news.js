@@ -64,6 +64,64 @@ router.post ('/', function(req, res) {
     });
 
     item.then(i => console.log(i)); // Send to Webflow
+
+    // HTTP POST to Slack Webhook to post an update on Slack
+    request({
+      url: process.env.BDS_SLACK_WEBHOOK,
+      method: "POST",
+      json: true,
+      body: {
+        "attachments": [
+          {
+            "title": "New News Post to Webflow",
+            "color": "#36a64f",
+            "image_url": newsPost['image'],
+            "text": "This needs to be published to the Webflow CMS using the Webflow Editor",
+            "fields": [
+              {
+                "title": "Name",
+                "value": newsPost['title'],
+                "short": false
+              }, {
+                "title": "Description",
+                "value": newsPost['description'],
+                "short": false
+              }, {
+                "title": "Article Link",
+                "value": newsPost['url'],
+                "short": false
+              }
+            ]
+          },
+          {
+            "fallback": "Publish to Webflow?",
+            "title": "Publish to Webflow?",
+            "callback_id": "publish_webflow",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "actions": [
+              {
+                "name": "publish",
+                "text": "Publish",
+                "style": "danger"
+                "type": "button",
+                "value": "publish"
+              },
+              {
+                "name": "no",
+                "text": "No Thanks",
+                "type": "button",
+                "value": "no"
+              }
+            ]
+          }
+        ]
+      }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          console.log(body);
+        }
+      }
+    });
   });
 
   client.on("error", function(err){
@@ -71,45 +129,6 @@ router.post ('/', function(req, res) {
   });
 
   client.fetch();
-
-
-
-  // HTTP POST to Slack Webhook to post an update on Slack
-  /*request({
-    url: process.env.BDS_SLACK_WEBHOOK,
-    method: "POST",
-    json: true,
-    body: {
-      "attachments": [
-        {
-          "fallback": "A new post from Instagram has been posted to Webflow.",
-          "color": "#36a64f",
-          "pretext": "A new post from Instagram has been posted to Webflow.",
-          "title": "Instagram Post to Webflow",
-          "text": "This needs to be published to the Webflow CMS using the Webflow Editor",
-          "fields": [
-            {
-              "title": "Name",
-              "value": req.body['name'],
-              "short": false
-            }, {
-              "title": "Post Link",
-              "value": req.body['link'],
-              "short": false
-            }, {
-              "title": "Image Link",
-              "value": req.body['image'],
-              "short": false
-            }
-          ]
-        }
-      ]
-    }, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    }
-  });*/
 
   res.send(req.body);
 });
