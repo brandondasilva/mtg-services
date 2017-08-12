@@ -27,7 +27,7 @@ router.post ('/', function(req, res) {
 
   var originalMessage = actions['original_message'];
   delete originalMessage['attachments'][1]['actions'];
-  payload = originalMessage['attachments'];
+  var payload = originalMessage['attachments'];
 
   console.log(actions);
   console.log(originalMessage);
