@@ -43,9 +43,7 @@ router.post ('/', function(req, res) {
     payload["text"] = "Sorry, that didn't work. Please check Webflow for errors."
   }
 
-  console.log(originalMessage);
   originalMessage['attachments'][2] = payload;
-  console.log(originalMessage);
 
   request({
     url: actions['response_url'],
@@ -58,12 +56,6 @@ router.post ('/', function(req, res) {
       }
     }
   });
-
-  // res.status(500).send({
-  //   "response_type": "ephemeral",
-  //   "replace_original": false,
-  //   "text": "Something went wrong."
-  // });
 });
 
 module.exports = router;
