@@ -50,6 +50,8 @@ router.post ('/', function(req, res) {
     } else {
       newsPost['image'] = req.body['image'];
     }
+
+    console.log(newsPost);
   });
 
   client.on("error", function(err){
@@ -57,8 +59,6 @@ router.post ('/', function(req, res) {
   });
 
   client.fetch();
-
-  console.log(newsPost);
 
   // Create Webflow item to push to the CMS
   /*var item = webflow.createItem({
