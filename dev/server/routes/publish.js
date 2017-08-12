@@ -27,14 +27,14 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
-  if (req.body['actions']['value'] == "no") {
+  if (req.body['actions'][0]['value'] == "no") {
     res.send({
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Thanks. You can check out the added posting on Webflow Editor."
     });
 
-  } else if (req.body['actions']['value'] == "publish") {
+  } else if (req.body['actions'][0]['value'] == "publish") {
     res.send({
       "response_type": "ephemeral",
       "replace_original": false,
