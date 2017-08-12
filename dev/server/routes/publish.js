@@ -27,18 +27,18 @@ router.post ('/', function(req, res) {
 
   var originalMessage = actions['original_message'];
   delete originalMessage['attachments'][1]['actions'];
-  var payload = originalMessage['attachments'];
+  var payload = originalMessage['attachments'][2];
 
   console.log(actions);
   console.log(originalMessage);
 
   if (actions["actions"][0]["value"] == "no") {
-    payload[1].push({
+    payload.push({
       "text": "Not Published. You can check out the added posting on Webflow Editor."
     });
 
   } else if (actions["actions"][0]["value"] == "publish") {
-    payload[1].push({
+    payload.push({
       "text": "Published!"
     });
 
@@ -51,7 +51,7 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
 
   } else {
-    payload[1].push({
+    payload.push({
       "text": "Sorry, that didn't work. Please check Webflow for errors."
     });
   }
