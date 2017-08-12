@@ -29,9 +29,8 @@ router.post ('/', function(req, res) {
 
   client.on("fetch", function() {
 
-    console.log(client.title);
-    console.log(client.description);
-    console.log(client.image);
+    console.log("SCHEME");
+    console.log(client.scheme);
 
     if (req.body['title'] == undefined) {
       newsPost['title'] = client.title;
@@ -65,7 +64,7 @@ router.post ('/', function(req, res) {
     collectionId: '58be4ff264167da73c14db28',
     fields: {
       'name': newsPost['title'],
-      'slug': newsPost['title'].replace(/\s+/g, '-').toLowerCase(),
+      'slug': 'testing-it-out',
       '_archived': false,
       '_draft': false,
       'article-link': newsPost['url'],
