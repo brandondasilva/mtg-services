@@ -27,7 +27,7 @@ router.post ('/', function(req, res) {
 
   var actions = req.body['payload'];
 
-  console.log(req.body);
+  console.log(actions);
 
   if (actions['actions'][0]['value'] == "no") {
     res.send({
