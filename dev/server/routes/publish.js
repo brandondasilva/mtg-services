@@ -35,10 +35,18 @@ router.post ('/', function(req, res) {
   console.log(actions['actions']);
 
   if (actions["actions"][0]["value"] == "no") {
-    payload = { "text": "Not Published. You can check out the added posting on Webflow Editor." };
+    payload = {
+      "response_type": "ephemeral",
+      "replace_original": false,
+      "text": "Not Published. You can check out the added posting on Webflow Editor."
+    };
 
   } else if (actions["actions"][0]["value"] == "publish") {
-    payload = { "text": "Published!" };
+    payload = {
+      "response_type": "ephemeral",
+      "replace_original": false,
+      "text": "Published!"
+    };
 
     /*// Publish on Webflow
     var publish = webflow.publishSite({
@@ -49,7 +57,11 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
     */
   } else {
-    payload = { "text": "Sorry, that didn't work. Please check Webflow for errors." };
+    payload = {
+      "response_type": "ephemeral",
+      "replace_original": false,
+      "text": "Sorry, that didn't work. Please check Webflow for errors."
+    };
   }
 
   console.log(payload);
