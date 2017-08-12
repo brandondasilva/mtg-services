@@ -19,29 +19,35 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  // res.send({
-  //   "response_type": "ephemeral",
-  //   "replace_original": false,
-  //   "text": "Working..."
-  // });
+  res.send({
+    "response_type": "ephemeral",
+    "replace_original": false,
+    "text": "Working..."
+  });
 
   var actions = req.body['payload'];
 
+  var payload = {
+    "response_type": "ephemeral",
+    "replace_original": false,
+    "text": ""
+  }
+
   console.log(actions);
 
-  if (actions['actions'][0]['value'] == "no") {
-    res.send({
+  if (actions["actions"][0]["value"] == "no") {
+    payload = {
       "response_type": "ephemeral",
       "replace_original": false,
-      "text": "Thanks. You can check out the added posting on Webflow Editor."
-    });
+      "text": "Not Published. You can check out the added posting on Webflow Editor."
+    };
 
-  } else if (actions['actions'][0]['value'] == "publish") {
-    res.send({
+  } else if (actions["actions"][0]["value"] == "publish") {
+    payload = {
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Published!"
-    });
+    };
 
     /*// Publish on Webflow
     var publish = webflow.publishSite({
@@ -52,11 +58,11 @@ router.post ('/', function(req, res) {
     publish.then(p => console.log(p));
     */
   } else {
-    res.status(500).send({
+    payload = {
       "response_type": "ephemeral",
       "replace_original": false,
       "text": "Sorry, that didn't work. Please check Webflow for errors."
-    });
+    };
 
   }
 
