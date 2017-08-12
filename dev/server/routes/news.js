@@ -23,32 +23,39 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
-  var newsPost = {
-    'url': req.body['url']
-  }
+  var newsPost = { 'url': req.body['url'] }
 
   var client = new MetaInspector(req.body['url'], { timeout: 5000 });
-  client.fetch();
 
-  if (req.body['title'] == undefined) {
-    newsPost['title'] = client.title;
-  } else {
-    newsPost['title'] = req.body['title'];
-  }
+  client.on("fetch", function() {
 
-  if (req.body['description'] == undefined) {
-    newsPost['description'] = client.description;
-  } else {
-    newsPost['description'] = req.body['description'];
-  }
+    console.log(client.title);
+    console.log(client.description);
+    console.log(client.image);
 
-  if (req.body['image'] == undefined) {
-    newsPost['image'] = client.image;
-  } else {
-    newsPost['image'] = req.body['image'];
-  }
+    if (req.body['title'] == undefined) {
+      newsPost['title'] = client.title;
+    } else {
+      newsPost['title'] = req.body['title'];
+    }
 
-  console.log(client);
+    if (req.body['description'] == undefined) {
+      newsPost['description'] = client.description;
+    } else {
+      newsPost['description'] = req.body['description'];
+    }
+
+    if (req.body['image'] == undefined) {
+      newsPost['image'] = client.image;
+    } else {
+      newsPost['image'] = req.body['image'];
+    }
+  });
+
+  client.on("error", function(err){
+    console.log(err);
+  });
+
   console.log(newsPost);
 
   // Create Webflow item to push to the CMS
