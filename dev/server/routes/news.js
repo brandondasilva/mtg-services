@@ -29,9 +29,6 @@ router.post ('/', function(req, res) {
 
   client.on("fetch", function() {
 
-    console.log("SCHEME");
-    console.log(client.scheme);
-
     if (req.body['title'] == undefined) {
       newsPost['title'] = client.title;
     } else {
@@ -65,6 +62,8 @@ router.post ('/', function(req, res) {
         'meta-description': newsPost['description']
       }
     });
+
+    item.then(i => console.log(i)); // Send to Webflow
   });
 
   client.on("error", function(err){
@@ -111,8 +110,6 @@ router.post ('/', function(req, res) {
       }
     }
   });*/
-
-  item.then(i => console.log(i)); // Send to Webflow
 
   res.send(req.body);
 });
