@@ -29,7 +29,7 @@ router.post ('/', function(req, res) {
     var newsPost = { 'url': req.body['url'] }
   }
 
-  var client = new MetaInspector(req.body['url'], { timeout: 5000 });
+  var client = new MetaInspector(newsPost['url'], { timeout: 5000 });
 
   client.on("fetch", function() {
 
