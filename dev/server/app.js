@@ -31,7 +31,7 @@ var news = require('./routes/news');
 var publish = require('./routes/publish');
 
 app.use('/news', news);
-app.use('/news/publish', publish);
+app.use('/publish', publish);
 
 // Support
 // var support = require('./routes/support');
