@@ -56,6 +56,8 @@ router.post ('/', function(req, res) {
     console.log(err);
   });
 
+  client.fetch();
+
   console.log(newsPost);
 
   // Create Webflow item to push to the CMS
