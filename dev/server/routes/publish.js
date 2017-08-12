@@ -17,11 +17,7 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  res.send({
-    "response_type": "ephemeral",
-    "replace_original": false,
-    "text": "Working..."
-  });
+  res.send();
 
   var actions = JSON.parse(req.body['payload']);
 
