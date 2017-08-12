@@ -19,6 +19,12 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
+  res.send({
+    "response_type": "ephemeral",
+    "replace_original": false,
+    "text": "Working..."
+  });
+
   console.log(req.body);
 
   var payload = {};
@@ -66,7 +72,7 @@ router.post ('/', function(req, res) {
     }
   });
 
-  res.send(req.body);
+
 });
 
 module.exports = router;
