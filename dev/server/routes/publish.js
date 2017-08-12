@@ -35,7 +35,7 @@ router.post ('/', function(req, res) {
   if (actions["actions"][0]["value"] == "no") {
     payload[1].push({
       "text": "Not Published. You can check out the added posting on Webflow Editor."
-    };
+    });
 
   } else if (actions["actions"][0]["value"] == "publish") {
     payload[1].push({
@@ -53,7 +53,7 @@ router.post ('/', function(req, res) {
   } else {
     payload[1].push({
       "text": "Sorry, that didn't work. Please check Webflow for errors."
-    };
+    });
   }
 
 
