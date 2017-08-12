@@ -103,7 +103,7 @@ router.post ('/', function(req, res) {
               {
                 "name": "publish",
                 "text": "Publish",
-                "style": "danger"
+                "style": "danger",
                 "type": "button",
                 "value": "publish"
               },

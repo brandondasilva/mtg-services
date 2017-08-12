@@ -21,4 +21,8 @@ router.post ('/', function(req, res) {
 
   console.log(req.body);
 
+  /*var publish = webflow.publishSite({
+    siteId: '58be0ec3d9b8619b4a64d0d3',
+    domains: ['mtg2017.webflow.io']
+  });*/
 });
