@@ -21,18 +21,7 @@ router.get ('/', function(req, res) {
 router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  request({
-    url: 'https://api.webflow.com/sites',
-    method: "GET",
-    json: true,
-    function(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-      }
-    }
-  })
-
-  /*console.log(req.body);
+  console.log(req.body);
 
   var newsPost = { 'url': req.body['url'] }
 
@@ -69,23 +58,24 @@ router.post ('/', function(req, res) {
     console.log(err);
   });
 
-  client.fetch();*/
+  client.fetch();
 
   // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
-  /*var item = webflow.createItem({
-    collectionId: '',
+  var item = webflow.createItem({
+    collectionId: '58be4ff264167da73c14db28',
     fields: {
       'name': newsPost['title'],
-      'slug': ,
-      '_archived': ,
-      '_draft': ,
-      'article-link': ,
-      'image-link':
+      'slug': newsPost['title'].replace(/\s+/g, '-').toLowerCase(),
+      '_archived': false,
+      '_draft': false,
+      'article-link': newsPost['url'],
+      'image-link': newsPost['image'],
+      'meta-description': newsPost['description']
     }
   });
 
   // HTTP POST to Slack Webhook to post an update on Slack
-  request({
+  /*request({
     url: process.env.BDS_SLACK_WEBHOOK,
     method: "POST",
     json: true,
@@ -119,11 +109,9 @@ router.post ('/', function(req, res) {
         console.log(body);
       }
     }
-  });
+  });*/
 
   item.then(i => console.log(i)); // Send to Webflow
-
-  */
 
   res.send(req.body);
 });
