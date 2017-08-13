@@ -51,8 +51,6 @@ router.post ('/', function(req, res) {
       newsPost['image'] = req.body['image'];
     }
 
-    console.log(newsPost);
-
     // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
     var item = webflow.createItem({
       collectionId: '58be4ff264167da73c14db28',
@@ -69,66 +67,59 @@ router.post ('/', function(req, res) {
 
     item.then(i => console.log(i)); // Send to Webflow
 
-    // HTTP POST to Slack Webhook to post an update on Slack
-    request({
-      url: process.env.BDS_SLACK_WEBHOOK,
-      method: "POST",
-      json: true,
-      body: {
-        "attachments": [
-          {
-            "title": "New News Post to Webflow",
-            "color": "#36a64f",
-            "text": "This needs to be published to the Webflow CMS using the Webflow Editor",
-            "image_url": newsPost['image']
-          },
-          {
-            "title": "Article Information",
-            "fields": [
-              {
-                "title": "Name",
-                "value": newsPost['title'],
-                "short": false
-              }, {
-                "title": "Description",
-                "value": newsPost['description'],
-                "short": false
-              }, {
-                "title": "Article Link",
-                "value": newsPost['url'],
-                "short": false
-              }
-            ],
-          },
-          {
-            "fallback": "Publish to Webflow?",
-            "title": "Publish to Webflow?",
-            "callback_id": "publish_webflow",
-            "color": "#3AA3E3",
-            "attachment_type": "default",
-            "actions": [
-              {
-                "name": "publish",
-                "text": "Publish",
-                "style": "danger",
-                "type": "button",
-                "value": "publish"
-              },
-              {
-                "name": "no",
-                "text": "No Thanks",
-                "type": "button",
-                "value": "no"
-              }
-            ]
-          }
-        ]
-      }, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          console.log(body);
+    var content = {
+      "attachments": [
+        {
+          "title": "New News Post to Webflow",
+          "color": "#36a64f",
+          "text": "This needs to be published to the Webflow CMS using the Webflow Editor",
+          "image_url": newsPost['image']
+        },
+        {
+          "title": "Article Information",
+          "fields": [
+            {
+              "title": "Name",
+              "value": newsPost['title'],
+              "short": false
+            }, {
+              "title": "Description",
+              "value": newsPost['description'],
+              "short": false
+            }, {
+              "title": "Article Link",
+              "value": newsPost['url'],
+              "short": false
+            }
+          ],
+        },
+        {
+          "fallback": "Publish to Webflow?",
+          "title": "Publish to Webflow?",
+          "callback_id": "publish_webflow",
+          "color": "#3AA3E3",
+          "attachment_type": "default",
+          "actions": [
+            {
+              "name": "publish",
+              "text": "Publish",
+              "style": "danger",
+              "type": "button",
+              "value": "publish"
+            },
+            {
+              "name": "no",
+              "text": "No Thanks",
+              "type": "button",
+              "value": "no"
+            }
+          ]
         }
-      }
-    });
+      ]
+    }
+
+    slackRequest(content, process.env.BDS_SLACK_WEBHOOK);
+    slackRequest(content, process.env.PREMUS_SLACK_WEBHOOK);
   });
 
   client.on("error", function(err){
@@ -139,5 +130,20 @@ router.post ('/', function(req, res) {
 
   res.send(req.body);
 });
+
+function slackRequest(content, webhook) {
+
+  request({
+    url: webhook,
+    method: "POST",
+    json: true,
+    body: content,
+    function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body);
+      }
+    }
+  });
+}
 
 module.exports = router;
