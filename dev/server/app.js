@@ -26,17 +26,21 @@ app.use('/registration', registration);
 app.use('/stories', stories);
 app.use('/contact', contact);
 
-// Other
-// var news = require('./routes/news');
-// var support = require('./routes/support');
+// News
+var news = require('./routes/news/news');
+var publish = require('./routes/news/publish');
 
-// app.use('/news', news);
+app.use('/news', news);
+app.use('/news/publish', publish);
+
+// Support
+// var support = require('./routes/support');
 // app.use('/support', support);
 
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
-  res.status(200).send('ok');
+  res.send('ok');
 });
 
 app.listen(app.get('port'), function() {
