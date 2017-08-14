@@ -22,6 +22,7 @@ router.post ('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
 
   console.log(req.body);
+  res.send("Sending link...");
 
   if (req.body['url'] == undefined) {
     var newsPost = { 'url': req.body['text'] }
@@ -127,8 +128,6 @@ router.post ('/', function(req, res) {
   });
 
   client.fetch();
-
-  res.send(req.body);
 });
 
 function slackRequest(content, webhook) {
