@@ -64,7 +64,7 @@ router.post ('/', function(req, res) {
         newsPost['image'] = req.body['image'];
       }
 
-      // Create Webflow item to push to the CMS TODO ADD TO FEATURED AUTOMATICALLY
+      // Create Webflow item to push to the CMS
       var item = webflow.createItem({
         collectionId: '58be4ff264167da73c14db28',
         fields: {
@@ -137,6 +137,7 @@ router.post ('/', function(req, res) {
     });
 
     client.on("error", function(err){
+      console.log('META INSPECTOR ERROR!');
       console.log(err);
     });
 
@@ -146,7 +147,7 @@ router.post ('/', function(req, res) {
 
     // If the input string is not a valid URL
 
-    res.status(500).send("Failed! Please enter a valid URL.");
+    res.send("Failed! Please enter a valid URL.");
   }
 
 });
