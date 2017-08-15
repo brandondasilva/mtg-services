@@ -136,7 +136,21 @@ router.post ('/', function(req, res) {
       slackRequest(content, process.env.PREMUS_SLACK_WEBHOOK);
     });
 
-    client.on("error", function(err){
+    client.on("error", function(err) {
+      
+      var content = {
+        "attachments": [
+          {
+            "title": "News upload failed!",
+            "color": "#C10039",
+            "text": "The URL you have entered is invalid"
+          }
+        ]
+      }
+
+      slackRequest(content, process.env.BDS_SLACK_WEBHOOK);
+      slackRequest(content, process.env.PREMUS_SLACK_WEBHOOK);
+
       console.log('META INSPECTOR ERROR!');
       console.log(err);
     });
