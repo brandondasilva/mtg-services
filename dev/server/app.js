@@ -34,8 +34,8 @@ app.use('/news', news);
 app.use('/news/publish', publish);
 
 // Support
-// var support = require('./routes/support');
-// app.use('/support', support);
+var support = require('./routes/support');
+app.use('/support', support);
 
 app.get('/', function(req, res) {
   res.set('Access-Control-Allow-Origin', '*');
