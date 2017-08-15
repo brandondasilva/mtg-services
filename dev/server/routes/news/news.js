@@ -38,8 +38,11 @@ router.post ('/', function(req, res) {
     // If the input string is a valid URL
 
     res.send("Sending link...");
+    console.log('REQUEST START');
+    console.log(newsPost);
 
     var client = new MetaInspector(newsPost['url'], { timeout: 5000 });
+    console.log(client);
 
     client.on("fetch", function() {
 
