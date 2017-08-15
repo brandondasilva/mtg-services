@@ -22,6 +22,7 @@
     "request": "^2.81.0",
     "sendgrid": "^4.7.1",
     "utf-8-validate": "2.0.0",
+    "valid-url": "^1.0.9",
     "webflow-api": "^0.4.1",
     "ws": "1.1.1"
   },
