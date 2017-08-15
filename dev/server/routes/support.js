@@ -32,6 +32,8 @@ router.post ('/', function(req, res) {
     console.log('--RESPONSE END--\n');
   });
 
+  res.send(req.body);
+
 });
 
 /**
