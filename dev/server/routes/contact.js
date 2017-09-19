@@ -32,7 +32,7 @@ router.post ('/', function(req, res) {
 
   // Today's date for logging
   var d = new Date(); // Create new Date
-  var date = moment.tz(d, "America/Toronto").format(); // Format the data to the appropriate timezone
+  var date = moment.tz(d, "America/Toronto").format(); // Format the date to the appropriate timezone
   req.body['name'] = req.body['firstname'] + ' ' + req.body['lastname'];
 
   // Configuring the email parameters for composing
